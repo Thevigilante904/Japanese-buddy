@@ -641,187 +641,501 @@
         .secondary:hover {
             background-color: #2c3e50;
         }
+
+        .nav-bar {
+            background-color: var(--secondary);
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-brand {
+            color: white;
+            text-decoration: none;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .nav-links a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-links a.active {
+            background-color: var(--primary);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background-color: var(--paper);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: var(--primary);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .header p {
+            color: var(--secondary);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background-color: var(--paper);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.25rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+            font-family: 'Noto Sans JP', sans-serif;
+        }
+
+        button:hover {
+            background-color: #2c3e50;
+            transform: translateY(-1px);
+        }
+
+        .search-container {
+            flex-grow: 1;
+            max-width: 400px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-family: 'Noto Sans JP', sans-serif;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            background-color: var(--paper);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 0;
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: var(--secondary);
+            color: white;
+            font-weight: 500;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .japanese-text {
+            position: relative;
+            display: inline-block;
+        }
+
+        .romaji {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--secondary);
+            margin-top: 0.25rem;
+        }
+
+        .tag {
+            background-color: var(--accent);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+
+        .progress-container {
+            background-color: #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .edit-btn, .delete-btn, .review-btn {
+            padding: 0.5rem 1rem;
+            margin-right: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .delete-btn {
+            background-color: var(--primary);
+        }
+
+        .delete-btn:hover {
+            background-color: #c13c3c;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .modal-content {
+            background-color: var(--paper);
+            padding: 2rem;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            right: 1.5rem;
+            top: 1rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            color: var(--dark);
+            opacity: 0.5;
+            transition: opacity 0.2s;
+        }
+
+        .close:hover {
+            opacity: 1;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-family: 'Noto Sans JP', sans-serif;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        .review-section {
+            background-color: var(--paper);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .review-section h2 {
+            color: var(--secondary);
+            margin-bottom: 1rem;
+        }
+
+        .review-section p {
+            margin-bottom: 1rem;
+        }
+
+        .review-card {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .review-card .japanese {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .review-card .reading {
+            font-size: 1.5rem;
+            color: var(--secondary);
+            margin-bottom: 1rem;
+        }
+
+        .review-card .meaning {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .review-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .review-actions button {
+            padding: 0.75rem 2rem;
+        }
+
+        .correct-btn {
+            background-color: var(--success);
+        }
+
+        .correct-btn:hover {
+            background-color: #3d5545;
+        }
+
+        .incorrect-btn {
+            background-color: var(--primary);
+        }
+
+        .incorrect-btn:hover {
+            background-color: #c13c3c;
+        }
+
+        .keyboard-shortcuts {
+            font-size: 0.9rem;
+            color: var(--secondary);
+            margin-top: 1rem;
+        }
+
+        .keyboard-shortcuts span {
+            background-color: #eee;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            margin: 0 0.25rem;
+        }
+
+        @media (max-width: 768px) {
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .search-container {
+                max-width: none;
+            }
+
+            .table-container {
+                margin: 0 -1rem;
+                border-radius: 0;
+            }
+
+            th, td {
+                padding: 0.75rem;
+            }
+
+            .edit-btn, .delete-btn, .review-btn {
+                margin-bottom: 0.5rem;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="japanese-pattern"></div>
-    <header>
-        <h1>
-            <span class="japanese-text">
-                日本語
-                <span class="romaji">nihongo</span>
-            </span>
-            <span>Vocabulary Tracker</span>
-        </h1>
-        <p>Journey through the beauty of Japanese language, one word at a time</p>
-    </header>
-    
-    <div class="container">
-        <div class="actions">
-            <input type="text" id="search" placeholder="Search vocabulary...">
-            <div class="button-group">
-                <button class="primary" id="add-word-btn">Add New Word</button>
-            </div>
+    <nav class="nav-bar">
+        <a href="index.html" class="nav-brand">日本語 Vocabulary Tracker</a>
+        <div class="nav-links">
+            <a href="index.html" class="active">Vocabulary</a>
+            <a href="settings.html">Settings</a>
         </div>
-        
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>日本語 Vocabulary Tracker</h1>
+            <p>Track your Japanese vocabulary learning progress with spaced repetition and mastery tracking.</p>
+        </div>
+
         <div class="stats">
             <div class="stat-card">
                 <h3>Total Words</h3>
-                <p id="total-words">0</p>
+                <div class="value" id="total-words">0</div>
             </div>
             <div class="stat-card">
                 <h3>Study Streak</h3>
-                <p id="study-streak">0</p>
-                <span>days</span>
+                <div class="value" id="study-streak">0</div>
             </div>
             <div class="stat-card">
                 <h3>Mastery Rate</h3>
-                <p id="mastery-rate">0%</p>
-                <div class="accuracy">Accuracy: <span id="accuracy-rate">0%</span></div>
+                <div class="value" id="mastery-rate">0%</div>
+            </div>
+            <div class="stat-card">
+                <h3>Accuracy Rate</h3>
+                <div class="value" id="accuracy-rate">0%</div>
             </div>
         </div>
-        
-        <div class="dashboard">
-            <div class="card">
-                <h2>Recent Vocabulary</h2>
-                <div class="table-container">
-                    <table id="vocab-table">
-                        <thead>
-                            <tr>
-                                <th>Japanese</th>
-                                <th>Reading</th>
-                                <th>Meaning</th>
-                                <th>Category</th>
-                                <th>Mastery</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="vocab-list">
-                            <!-- Vocabulary entries will be added here -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            
-            <div class="card">
-                <h2>Learning Progress</h2>
-                <div class="progress-container">
-                    <div class="progress-bar" id="progress-bar" style="width: 0%"></div>
-                </div>
-                <h3>Categories</h3>
-                <div id="categories-chart" style="height: 300px;">
-                    <!-- Chart will go here -->
-                    <p>Chart visualization coming soon. Currently tracking:</p>
-                    <ul id="categories-list">
-                        <!-- Categories will be listed here -->
-                    </ul>
-                </div>
-                
-                <h3>Review Schedule</h3>
-                <p>Words due for review today: <strong id="review-count">0</strong></p>
-                <button id="start-review">Start Review Session</button>
-            </div>
 
-            <div class="card settings-card">
-                <h2>Settings</h2>
-                <div class="settings-section">
-                    <h3>Data Management</h3>
-                    <div class="button-group settings-buttons">
-                        <button id="settings-export-btn" class="secondary">Export Data</button>
-                        <button id="settings-import-btn" class="secondary">Import Data</button>
-                        <button id="reset-progress-btn" class="danger">Reset Progress</button>
-                    </div>
-                    <p class="settings-info">Export your data regularly to keep it safe. You can import it back later.</p>
+        <div class="actions">
+            <button id="add-word-btn">Add New Word</button>
+            <div class="search-container">
+                <input type="text" id="search" placeholder="Search vocabulary...">
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Japanese</th>
+                        <th>Reading</th>
+                        <th>Meaning</th>
+                        <th>Category</th>
+                        <th>Mastery</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="vocab-list">
+                    <!-- Vocabulary items will be added here dynamically -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="review-section">
+            <h2>Review Session</h2>
+            <p>Words to review: <span id="review-count">0</span></p>
+            <div id="review-card" class="review-card" style="display: none;">
+                <div class="japanese"></div>
+                <div class="reading"></div>
+                <div class="meaning"></div>
+                <div class="review-actions">
+                    <button class="correct-btn">Correct</button>
+                    <button class="incorrect-btn">Incorrect</button>
                 </div>
-                <div class="settings-section">
-                    <h3>Progress Reset</h3>
-                    <p class="settings-info warning">Resetting progress will clear all mastery levels and review history. Your vocabulary words will be kept.</p>
+                <div class="keyboard-shortcuts">
+                    Keyboard shortcuts: <span>Space/Enter</span> to reveal, <span>→</span> for correct, <span>←</span> for incorrect, <span>Esc</span> to close
                 </div>
             </div>
+            <button id="start-review-btn">Start Review</button>
         </div>
     </div>
-    
+
     <!-- Add Word Modal -->
     <div id="add-word-modal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <h2>Add New Vocabulary</h2>
+            <h2>Add New Word</h2>
             <form id="add-word-form">
                 <div class="form-group">
-                    <label for="japanese">Japanese:</label>
+                    <label for="japanese">Japanese</label>
                     <input type="text" id="japanese" required>
                 </div>
                 <div class="form-group">
-                    <label for="reading">Reading (Furigana):</label>
+                    <label for="reading">Reading</label>
                     <input type="text" id="reading" required>
                 </div>
                 <div class="form-group">
-                    <label for="meaning">Meaning:</label>
+                    <label for="meaning">Meaning</label>
                     <input type="text" id="meaning" required>
                 </div>
                 <div class="form-group">
-                    <label for="category">Category:</label>
+                    <label for="category">Category</label>
                     <select id="category" required>
-                        <option value="noun">Noun</option>
-                        <option value="verb">Verb</option>
-                        <option value="adjective">Adjective</option>
-                        <option value="adverb">Adverb</option>
-                        <option value="expression">Expression</option>
-                        <option value="other">Other</option>
+                        <option value="">Select a category</option>
+                        <option value="Nouns">Nouns</option>
+                        <option value="Verbs">Verbs</option>
+                        <option value="Adjectives">Adjectives</option>
+                        <option value="Adverbs">Adverbs</option>
+                        <option value="Expressions">Expressions</option>
+                        <option value="Other">Other</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="notes">Notes:</label>
+                    <label for="notes">Notes (optional)</label>
                     <textarea id="notes" rows="3"></textarea>
                 </div>
-                <button type="submit" class="primary">Save Word</button>
+                <button type="submit">Save Word</button>
             </form>
         </div>
     </div>
 
-    <!-- Review Session Modal -->
-    <div id="review-modal" class="modal review-modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Review Session</h2>
-            <div class="review-progress">
-                Word <span id="current-word">1</span> of <span id="total-words-review">0</span>
-            </div>
-            <div class="review-card">
-                <div class="japanese-text">
-                    <div class="japanese"></div>
-                    <div class="reading-container">
-                        <div class="reading"></div>
-                    </div>
-                </div>
-                <div class="meaning"></div>
-            </div>
-            <button id="reveal-btn">Reveal Answer</button>
-            <div class="review-buttons" style="display: none;">
-                <button class="incorrect">Incorrect</button>
-                <button class="correct">Correct</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Import Modal -->
-    <div id="import-modal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Import Data</h2>
-            <div class="form-group">
-                <label for="import-data">Paste your exported data here:</label>
-                <textarea id="import-data" rows="10"></textarea>
-            </div>
-            <button id="import-confirm" class="primary">Import</button>
-        </div>
-    </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/kuroshiro@1.2.0/dist/kuroshiro.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/kuroshiro-analyzer-kuromoji@1.0.3/dist/kuroshiro-analyzer-kuromoji.min.js"></script>
     <script src="app.js"></script>
-    <script src="review.js"></script>
-    <script src="patterns.js"></script>
-    <script>
-        // Remove the sample vocabulary data and other script content since it's now in app.js
-    </script>
 </body>
 </html>
