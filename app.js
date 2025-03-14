@@ -144,28 +144,46 @@ class VocabularyManager {
         return Math.round(totalMastery / total);
     }
 
-    saveData() {
-        localStorage.setItem('vocabulary', JSON.stringify(this.vocabulary));
-        localStorage.setItem('stats', JSON.stringify(this.stats));
+    loadData() {
+        try {
+            const savedVocab = localStorage.getItem('vocabulary');
+            const savedStats = localStorage.getItem('stats');
+
+            if (savedVocab) {
+                this.vocabulary = JSON.parse(savedVocab);
+                // Convert date strings back to Date objects
+                this.vocabulary.forEach(word => {
+                    word.dateAdded = new Date(word.dateAdded);
+                    word.lastReviewed = word.lastReviewed ? new Date(word.lastReviewed) : null;
+                    word.nextReview = word.nextReview ? new Date(word.nextReview) : new Date();
+                });
+                console.log('Loaded vocabulary:', this.vocabulary.length, 'words');
+            }
+
+            if (savedStats) {
+                this.stats = JSON.parse(savedStats);
+                this.stats.lastStudy = this.stats.lastStudy ? new Date(this.stats.lastStudy) : null;
+            }
+        } catch (error) {
+            console.error('Error loading data:', error);
+            // Initialize with empty data if there's an error
+            this.vocabulary = [];
+            this.stats = {
+                streak: 0,
+                lastStudy: null,
+                totalReviews: 0,
+                correctReviews: 0
+            };
+        }
     }
 
-    loadData() {
-        const savedVocab = localStorage.getItem('vocabulary');
-        const savedStats = localStorage.getItem('stats');
-
-        if (savedVocab) {
-            this.vocabulary = JSON.parse(savedVocab);
-            // Convert date strings back to Date objects
-            this.vocabulary.forEach(word => {
-                word.dateAdded = new Date(word.dateAdded);
-                word.lastReviewed = word.lastReviewed ? new Date(word.lastReviewed) : null;
-                word.nextReview = word.nextReview ? new Date(word.nextReview) : new Date();
-            });
-        }
-
-        if (savedStats) {
-            this.stats = JSON.parse(savedStats);
-            this.stats.lastStudy = this.stats.lastStudy ? new Date(this.stats.lastStudy) : null;
+    saveData() {
+        try {
+            localStorage.setItem('vocabulary', JSON.stringify(this.vocabulary));
+            localStorage.setItem('stats', JSON.stringify(this.stats));
+            console.log('Saved vocabulary:', this.vocabulary.length, 'words');
+        } catch (error) {
+            console.error('Error saving data:', error);
         }
     }
 
@@ -219,6 +237,7 @@ const vocabManager = new VocabularyManager();
 
 // UI update functions
 function updateUI() {
+    console.log('Updating UI with', vocabManager.vocabulary.length, 'words');
     updateVocabularyTable();
     updateStats();
     updateCategories();
@@ -227,11 +246,22 @@ function updateUI() {
 
 async function updateVocabularyTable(filteredWords = null) {
     const vocabList = document.getElementById('vocab-list');
-    if (!vocabList) return;
+    if (!vocabList) {
+        console.error('Vocabulary list element not found');
+        return;
+    }
 
     vocabList.innerHTML = '';
 
     const wordsToDisplay = filteredWords || vocabManager.vocabulary;
+    console.log('Displaying', wordsToDisplay.length, 'words');
+
+    if (wordsToDisplay.length === 0) {
+        const emptyRow = document.createElement('tr');
+        emptyRow.innerHTML = '<td colspan="6" style="text-align: center;">No vocabulary words yet. Add your first word to get started!</td>';
+        vocabList.appendChild(emptyRow);
+        return;
+    }
 
     for (const word of wordsToDisplay) {
         const row = document.createElement('tr');
@@ -315,22 +345,43 @@ async function handleAddWord(event) {
     
     const japanese = document.getElementById('japanese').value;
     const reading = document.getElementById('reading').value;
-    
-    // Get romaji for both Japanese and reading
-    const japaneseRomaji = await getRomaji(japanese);
-    const readingRomaji = await getRomaji(reading);
-    
-    const word = vocabManager.addWord(
-        japanese,
-        reading,
-        document.getElementById('meaning').value,
-        document.getElementById('category').value,
-        document.getElementById('notes').value
-    );
+    const meaning = document.getElementById('meaning').value;
+    const category = document.getElementById('category').value;
+    const notes = document.getElementById('notes').value;
 
-    document.getElementById('add-word-modal').style.display = 'none';
-    document.getElementById('add-word-form').reset();
-    updateUI();
+    if (!japanese || !reading || !meaning || !category) {
+        alert('Please fill in all required fields (Japanese, Reading, Meaning, and Category)');
+        return;
+    }
+    
+    try {
+        // Get romaji for both Japanese and reading
+        const japaneseRomaji = await getRomaji(japanese);
+        const readingRomaji = await getRomaji(reading);
+        
+        const word = vocabManager.addWord(
+            japanese,
+            reading,
+            meaning,
+            category,
+            notes
+        );
+
+        console.log('Added new word:', word);
+
+        // Close modal and reset form
+        const modal = document.getElementById('add-word-modal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+        document.getElementById('add-word-form').reset();
+        
+        // Update UI
+        updateUI();
+    } catch (error) {
+        console.error('Error adding word:', error);
+        alert('Error adding word. Please try again.');
+    }
 }
 
 function handleEditWord(event) {
@@ -403,6 +454,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Set up event listeners
+    const addWordBtn = document.getElementById('add-word-btn');
+    if (addWordBtn) {
+        addWordBtn.addEventListener('click', () => {
+            const modal = document.getElementById('add-word-modal');
+            if (modal) {
+                modal.style.display = 'flex';
+                // Reset form when opening modal
+                document.getElementById('add-word-form').reset();
+            }
+        });
+    }
+
     const addWordForm = document.getElementById('add-word-form');
     if (addWordForm) {
         addWordForm.addEventListener('submit', handleAddWord);
