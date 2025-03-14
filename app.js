@@ -693,40 +693,60 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // Add export/import handlers
+    // Add export/import/reset handlers with mobile support
     const exportBtn = document.getElementById('settings-export-btn');
     if (exportBtn) {
-        exportBtn.addEventListener('click', () => {
-            const data = vocabManager.exportData();
-            const blob = new Blob([data], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'japanese-vocabulary.json';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+        console.log('Setting up export handler');
+        addClickAndTouchHandler(exportBtn, () => {
+            console.log('Export button clicked');
+            try {
+                const data = vocabManager.exportData();
+                const blob = new Blob([data], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'japanese-vocabulary.json';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                console.log('Export completed successfully');
+            } catch (error) {
+                console.error('Error exporting data:', error);
+                alert('Error exporting data. Please try again.');
+            }
         });
+    } else {
+        console.error('Export button not found');
     }
 
     const importBtn = document.getElementById('settings-import-btn');
     if (importBtn) {
-        importBtn.addEventListener('click', () => {
+        console.log('Setting up import handler');
+        addClickAndTouchHandler(importBtn, () => {
+            console.log('Import button clicked');
             const importModal = document.getElementById('import-modal');
             if (importModal) {
                 importModal.style.display = 'flex';
+            } else {
+                console.error('Import modal not found');
             }
         });
+    } else {
+        console.error('Import button not found');
     }
 
     const importConfirmBtn = document.getElementById('import-confirm');
     if (importConfirmBtn) {
-        importConfirmBtn.addEventListener('click', () => {
+        console.log('Setting up import confirm handler');
+        addClickAndTouchHandler(importConfirmBtn, () => {
+            console.log('Import confirm button clicked');
             const importData = document.getElementById('import-data');
             if (importData) {
                 try {
+                    console.log('Attempting to import data...');
                     if (vocabManager.importData(importData.value)) {
+                        console.log('Data imported successfully');
                         alert('Data imported successfully!');
                         const importModal = document.getElementById('import-modal');
                         if (importModal) {
@@ -735,16 +755,21 @@ document.addEventListener('DOMContentLoaded', async () => {
                         importData.value = '';
                         updateUI();
                     } else {
+                        console.error('Invalid data format');
                         alert('Invalid data format. Please check your import data.');
                     }
                 } catch (e) {
+                    console.error('Error importing data:', e);
                     alert('Error importing data. Please check the format and try again.');
                 }
+            } else {
+                console.error('Import data textarea not found');
             }
         });
+    } else {
+        console.error('Import confirm button not found');
     }
 
-    // Add reset progress handler
     const resetBtn = document.getElementById('reset-progress-btn');
     if (resetBtn) {
         console.log('Setting up reset progress handler');
