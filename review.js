@@ -110,12 +110,17 @@ class ReviewUI {
     }
 
     async showCurrentWord() {
-        if (this.session.isComplete()) {
+        if (!this.session || this.session.isComplete()) {
             this.completeSession();
             return;
         }
 
         const word = this.session.getCurrentWord();
+        if (!word) {
+            console.error('No current word available');
+            return;
+        }
+
         const card = document.querySelector('.review-card');
         const currentWordNum = document.getElementById('current-word');
         
@@ -138,9 +143,14 @@ class ReviewUI {
             <span class="romaji">${readingRomaji}</span>
         `;
         
-        card.querySelector('.meaning').textContent = word.meaning;
+        // Set the meaning
+        const meaningElement = card.querySelector('.meaning');
+        meaningElement.textContent = word.meaning;
+        meaningElement.style.display = 'none';
+        
         currentWordNum.textContent = this.session.currentIndex + 1;
         
+        // Reset UI elements
         document.getElementById('reveal-btn').style.display = 'block';
         document.querySelector('.review-buttons').style.display = 'none';
 
@@ -151,14 +161,23 @@ class ReviewUI {
     }
 
     revealAnswer() {
+        if (!this.session) return;
+        
         this.isAnswerRevealed = true;
-        document.querySelector('.review-card').classList.add('revealed');
+        const card = document.querySelector('.review-card');
+        card.classList.add('revealed');
+        
+        // Show the meaning
+        const meaningElement = card.querySelector('.meaning');
+        meaningElement.style.display = 'block';
+        
+        // Update UI
         document.getElementById('reveal-btn').style.display = 'none';
         document.querySelector('.review-buttons').style.display = 'flex';
     }
 
     handleAnswer(isCorrect) {
-        if (!this.isAnswerRevealed) return;
+        if (!this.session || !this.isAnswerRevealed) return;
         
         const word = this.session.getCurrentWord();
         this.vocabManager.reviewWord(word.id, isCorrect);
@@ -167,6 +186,8 @@ class ReviewUI {
     }
 
     completeSession() {
+        if (!this.session) return;
+        
         const stats = this.session.getStats();
         const message = `Review session complete!\n\n` +
                        `Accuracy: ${stats.accuracy}%\n` +
