@@ -258,7 +258,7 @@ async function updateVocabularyTable(filteredWords = null) {
 
     if (wordsToDisplay.length === 0) {
         const emptyRow = document.createElement('tr');
-        emptyRow.innerHTML = '<td colspan="6" style="text-align: center;">No vocabulary words yet. Add your first word to get started!</td>';
+        emptyRow.innerHTML = '<td colspan="5" style="text-align: center;">No vocabulary words yet. Add your first word to get started!</td>';
         vocabList.appendChild(emptyRow);
         return;
     }
@@ -282,7 +282,6 @@ async function updateVocabularyTable(filteredWords = null) {
                 </div>
             </td>
             <td>${word.meaning}</td>
-            <td><span class="tag">${word.category}</span></td>
             <td>
                 <div class="progress-container" style="height: 10px;">
                     <div class="progress-bar" style="width: ${word.mastery}%; 
