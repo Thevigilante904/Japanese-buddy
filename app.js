@@ -747,13 +747,24 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Add reset progress handler
     const resetBtn = document.getElementById('reset-progress-btn');
     if (resetBtn) {
-        resetBtn.addEventListener('click', () => {
+        console.log('Setting up reset progress handler');
+        addClickAndTouchHandler(resetBtn, () => {
+            console.log('Reset progress button clicked');
             if (confirm('Are you sure you want to reset all progress? This will clear all mastery levels and review history, but keep your vocabulary words. This action cannot be undone.')) {
-                vocabManager.resetProgress();
-                updateUI();
-                alert('Progress has been reset successfully.');
+                try {
+                    console.log('Resetting progress...');
+                    vocabManager.resetProgress();
+                    console.log('Progress reset successfully');
+                    updateUI();
+                    alert('Progress has been reset successfully.');
+                } catch (error) {
+                    console.error('Error resetting progress:', error);
+                    alert('Error resetting progress. Please try again.');
+                }
             }
         });
+    } else {
+        console.error('Reset progress button not found');
     }
 
     // Add modal close handlers
