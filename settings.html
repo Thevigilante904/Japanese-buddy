@@ -28,49 +28,109 @@
             padding: 0;
             background-color: var(--light);
             color: var(--dark);
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)),
+                url('data:image/svg+xml;utf8,<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="1" fill="%23D64545" opacity="0.2"/></svg>');
+            background-size: 20px 20px;
         }
 
-        .nav-bar {
-            background-color: var(--secondary);
-            padding: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-        }
-
-        .nav-brand {
+        header {
+            background-color: var(--primary);
             color: white;
-            text-decoration: none;
-            font-size: 1.5rem;
-            font-weight: bold;
+            padding: 2rem 1rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            background-image: 
+                linear-gradient(135deg, rgba(214, 69, 69, 0.95) 0%, rgba(173, 43, 43, 0.95) 100%),
+                url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 0L40 20L20 40L0 20L20 0z M20 5L35 20L20 35L5 20L20 5z' fill='%23ffffff' fill-opacity='0.1'/%3E%3C/svg%3E");
+            background-size: 40px 40px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .header-content {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header h1 {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            font-size: 2.2rem;
+            margin-bottom: 0.75rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            position: relative;
+            line-height: 1.2;
+        }
+
+        header h1 .japanese-text {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.2rem;
+            padding-right: 1rem;
+            border-right: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        header p {
+            font-size: 1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+            position: relative;
+            padding: 0 1rem;
+            font-weight: 300;
+            letter-spacing: 0.5px;
         }
 
         .nav-menu {
-            position: relative;
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
             display: inline-block;
+            z-index: 1000;
         }
 
         .nav-menu-btn {
             background: none;
             border: none;
             color: white;
-            padding: 0.5rem 1rem;
+            padding: 0.5rem;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 1.5rem;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            justify-content: center;
+            opacity: 0.9;
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
         }
 
         .nav-menu-btn:hover {
+            opacity: 1;
             background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
+        }
+
+        .hamburger-icon {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .hamburger-icon span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background-color: white;
+            transition: all 0.3s ease;
         }
 
         .nav-menu-content {
@@ -106,7 +166,9 @@
         }
 
         .container {
-            margin-top: 4rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
         }
 
         .card {
@@ -244,24 +306,22 @@
     </style>
 </head>
 <body>
-    <nav class="nav-bar">
-        <a href="index.html" class="nav-brand">日本語 Vocabulary Tracker</a>
+    <header>
         <div class="nav-menu">
             <button class="nav-menu-btn">
-                Menu
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M6 9l6 6 6-6"/>
-                </svg>
+                <div class="hamburger-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
             </button>
             <div class="nav-menu-content">
                 <a href="index.html">Vocabulary</a>
+                <a href="hiragana.html">Hiragana</a>
+                <a href="katakana.html">Katakana</a>
                 <a href="settings.html" class="active">Settings</a>
-                <!-- Add more menu items here as needed -->
             </div>
         </div>
-    </nav>
-
-    <div class="container">
         <div class="header-content">
             <h1>
                 <span class="japanese-text">設定</span>
@@ -269,7 +329,9 @@
             </h1>
             <p>Manage your application preferences and data</p>
         </div>
-        
+    </header>
+
+    <div class="container">
         <div class="card">
             <div class="settings-section">
                 <h2>Data Management</h2>
