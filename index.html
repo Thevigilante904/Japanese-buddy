@@ -598,6 +598,49 @@
                 align-items: flex-start;
             }
         }
+
+        .settings-card {
+            grid-column: 1 / -1;
+            margin-top: 1rem;
+        }
+
+        .settings-section {
+            margin-bottom: 2rem;
+        }
+
+        .settings-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .settings-buttons {
+            margin: 1rem 0;
+        }
+
+        .settings-info {
+            font-size: 0.9rem;
+            color: var(--secondary);
+            margin-top: 0.5rem;
+        }
+
+        .warning {
+            color: var(--primary);
+        }
+
+        .danger {
+            background-color: var(--primary);
+        }
+
+        .danger:hover {
+            background-color: #c13c3c;
+        }
+
+        .secondary {
+            background-color: var(--secondary);
+        }
+
+        .secondary:hover {
+            background-color: #2c3e50;
+        }
     </style>
 </head>
 <body>
@@ -679,6 +722,23 @@
                 <h3>Review Schedule</h3>
                 <p>Words due for review today: <strong id="review-count">0</strong></p>
                 <button id="start-review">Start Review Session</button>
+            </div>
+
+            <div class="card settings-card">
+                <h2>Settings</h2>
+                <div class="settings-section">
+                    <h3>Data Management</h3>
+                    <div class="button-group settings-buttons">
+                        <button id="export-btn" class="secondary">Export Data</button>
+                        <button id="import-btn" class="secondary">Import Data</button>
+                        <button id="reset-progress-btn" class="danger">Reset Progress</button>
+                    </div>
+                    <p class="settings-info">Export your data regularly to keep it safe. You can import it back later.</p>
+                </div>
+                <div class="settings-section">
+                    <h3>Progress Reset</h3>
+                    <p class="settings-info warning">Resetting progress will clear all mastery levels and review history. Your vocabulary words will be kept.</p>
+                </div>
             </div>
         </div>
     </div>
