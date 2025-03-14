@@ -49,6 +49,7 @@
                 url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 0L40 20L20 40L0 20L20 0z M20 5L35 20L20 35L5 20L20 5z' fill='%23ffffff' fill-opacity='0.1'/%3E%3C/svg%3E");
             background-size: 40px 40px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
         }
 
         header::before {
@@ -145,6 +146,7 @@
             padding: 1rem;
             width: 100%;
             box-sizing: border-box;
+            margin-top: 4rem;
         }
         
         .dashboard {
@@ -649,6 +651,11 @@
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
         }
 
         .nav-brand {
@@ -658,25 +665,58 @@
             font-weight: bold;
         }
 
-        .nav-links {
-            display: flex;
-            gap: 1rem;
+        .nav-menu {
+            position: relative;
+            display: inline-block;
         }
 
-        .nav-links a {
+        .nav-menu-btn {
+            background: none;
+            border: none;
             color: white;
-            text-decoration: none;
             padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-menu-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
             border-radius: 4px;
+        }
+
+        .nav-menu-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: var(--paper);
+            min-width: 200px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+            z-index: 1001;
+        }
+
+        .nav-menu-content.show {
+            display: block;
+        }
+
+        .nav-menu-content a {
+            color: var(--dark);
+            padding: 0.75rem 1rem;
+            text-decoration: none;
+            display: block;
             transition: background-color 0.2s;
         }
 
-        .nav-links a:hover {
-            background-color: rgba(255, 255, 255, 0.1);
+        .nav-menu-content a:hover {
+            background-color: rgba(0, 0, 0, 0.05);
         }
 
-        .nav-links a.active {
+        .nav-menu-content a.active {
             background-color: var(--primary);
+            color: white;
         }
 
         .header {
@@ -1020,11 +1060,31 @@
 <body>
     <nav class="nav-bar">
         <a href="index.html" class="nav-brand">日本語 Vocabulary Tracker</a>
-        <div class="nav-links">
-            <a href="index.html" class="active">Vocabulary</a>
-            <a href="settings.html">Settings</a>
+        <div class="nav-menu">
+            <button class="nav-menu-btn">
+                Menu
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M6 9l6 6 6-6"/>
+                </svg>
+            </button>
+            <div class="nav-menu-content">
+                <a href="index.html" class="active">Vocabulary</a>
+                <a href="settings.html">Settings</a>
+                <!-- Add more menu items here as needed -->
+            </div>
         </div>
     </nav>
+
+    <header>
+        <h1>
+            <span class="japanese-text">
+                日本語
+                <span class="romaji">nihongo</span>
+            </span>
+            <span>Vocabulary Tracker</span>
+        </h1>
+        <p>Journey through the beauty of Japanese language, one word at a time</p>
+    </header>
 
     <div class="container">
         <div class="header">
@@ -1137,5 +1197,18 @@
     <script src="https://cdn.jsdelivr.net/npm/kuroshiro@1.2.0/dist/kuroshiro.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/kuroshiro-analyzer-kuromoji@1.0.3/dist/kuroshiro-analyzer-kuromoji.min.js"></script>
     <script src="app.js"></script>
+    <script>
+        // Add dropdown menu functionality
+        document.querySelector('.nav-menu-btn').addEventListener('click', function() {
+            document.querySelector('.nav-menu-content').classList.toggle('show');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.nav-menu')) {
+                document.querySelector('.nav-menu-content').classList.remove('show');
+            }
+        });
+    </script>
 </body>
 </html>
