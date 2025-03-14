@@ -140,7 +140,8 @@
             padding: 1rem;
             width: 100%;
             box-sizing: border-box;
-            margin-top: 4rem;
+            margin-top: 2rem;
+            overflow-x: hidden;
         }
         
         .dashboard {
@@ -183,30 +184,25 @@
         }
         
         .stats {
-            display: flex;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1rem;
-            margin: 1rem auto;
-            max-width: 800px;
-            padding: 0.5rem;
+            margin: 1rem 0;
+            padding: 1rem;
             background-color: var(--paper);
             border-radius: 6px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        
-        @media (min-width: 768px) {
-            .stats {
-                grid-template-columns: repeat(3, 1fr);
-            }
+            width: 100%;
         }
         
         .stat-card {
             background: none;
-            padding: 0.5rem 1rem;
+            padding: 1rem;
             text-align: center;
-            min-width: 120px;
             box-shadow: none;
-            border-right: 1px solid rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+            min-width: 0;
         }
 
         .stat-card:last-child {
@@ -321,11 +317,41 @@
         }
 
         @media (max-width: 767px) {
-            .button-group {
-                flex-direction: column;
+            .container {
+                padding: 0.5rem;
+                margin-top: 1rem;
             }
 
-            .button-group button {
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.5rem;
+                padding: 0.5rem;
+            }
+
+            .stat-card {
+                padding: 0.75rem;
+            }
+
+            .stat-card h3 {
+                font-size: 0.75rem;
+            }
+
+            .stat-card .value {
+                font-size: 1rem;
+            }
+
+            .table-container {
+                margin: 1rem -0.5rem;
+                border-radius: 0;
+                padding: 0.5rem;
+            }
+
+            .actions {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .button-group {
                 width: 100%;
             }
 
@@ -576,27 +602,6 @@
             font-size: 0.8em;
             color: var(--accent);
             font-style: italic;
-        }
-
-        @media (max-width: 767px) {
-            .stat-card {
-                width: 100%;
-                margin-bottom: 1rem;
-            }
-
-            header h1 {
-                font-size: 2rem;
-                padding: 0 1rem;
-            }
-
-            header p {
-                padding: 0 1rem;
-            }
-
-            .japanese-text {
-                text-align: left;
-                align-items: flex-start;
-            }
         }
 
         .settings-card {
