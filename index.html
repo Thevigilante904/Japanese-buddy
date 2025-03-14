@@ -1095,6 +1095,59 @@
                 font-size: 1.1rem;
             }
         }
+
+        .meaning.hidden {
+            display: none;
+        }
+
+        .reveal-btn {
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 0;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .reveal-btn:hover {
+            background-color: #357abd;
+        }
+
+        .reveal-btn.hidden {
+            display: none;
+        }
+
+        .meaning-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .review-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .keyboard-shortcuts {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #666;
+            text-align: center;
+        }
+
+        .keyboard-shortcuts span {
+            background-color: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin: 0 2px;
+        }
     </style>
 </head>
 <body>
@@ -1151,19 +1204,16 @@
         <div class="review-section">
             <h2>Review Session</h2>
             <p>Words to review: <span id="review-count">0</span></p>
-            <div id="review-card" class="review-card">
-                <div class="japanese"></div>
+            <div id="review-card" class="card">
+                <div class="japanese-text"></div>
                 <div class="reading"></div>
                 <div class="meaning-container">
-                    <div class="meaning"></div>
+                    <div class="meaning hidden"></div>
                     <button id="reveal-answer-btn" class="reveal-btn">Reveal Answer</button>
                 </div>
-                <div class="review-actions">
-                    <button class="correct-btn">Correct</button>
+                <div class="review-buttons">
                     <button class="incorrect-btn">Incorrect</button>
-                </div>
-                <div class="keyboard-shortcuts">
-                    Keyboard shortcuts: <span>Space/Enter</span> to reveal, <span>→</span> for correct, <span>←</span> for incorrect, <span>Esc</span> to close
+                    <button class="correct-btn">Correct</button>
                 </div>
             </div>
             <button id="start-review-btn" class="primary">Start Review</button>
