@@ -936,15 +936,7 @@
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             margin-bottom: 2rem;
-        }
-
-        .review-section h2 {
-            color: var(--secondary);
-            margin-bottom: 1rem;
-        }
-
-        .review-section p {
-            margin-bottom: 1rem;
+            text-align: center;
         }
 
         .review-card {
@@ -952,56 +944,72 @@
             padding: 2rem;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 1rem;
+            margin: 1rem 0;
             text-align: center;
+            display: none;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        .review-card.show {
+            display: block;
         }
 
         .review-card .japanese {
-            font-size: 2rem;
+            font-size: 3rem;
             margin-bottom: 1rem;
+            color: var(--dark);
         }
 
         .review-card .reading {
-            font-size: 1.5rem;
+            font-size: 2rem;
             color: var(--secondary);
             margin-bottom: 1rem;
+            display: block;
         }
 
         .review-card .meaning {
-            font-size: 1.2rem;
+            font-size: 1.5rem;
+            color: var(--success);
             margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        .review-card.revealed .meaning {
+            display: block;
+            animation: fadeIn 0.3s ease;
         }
 
         .review-actions {
             display: flex;
             gap: 1rem;
             justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
         }
 
         .review-actions button {
-            padding: 0.75rem 2rem;
+            min-width: 140px;
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .correct-btn {
             background-color: var(--success);
         }
 
-        .correct-btn:hover {
-            background-color: #3d5545;
-        }
-
         .incorrect-btn {
             background-color: var(--primary);
         }
 
-        .incorrect-btn:hover {
-            background-color: #c13c3c;
-        }
-
         .keyboard-shortcuts {
+            margin-top: 1rem;
             font-size: 0.9rem;
             color: var(--secondary);
-            margin-top: 1rem;
         }
 
         .keyboard-shortcuts span {
@@ -1009,6 +1017,12 @@
             padding: 0.25rem 0.5rem;
             border-radius: 4px;
             margin: 0 0.25rem;
+            font-family: monospace;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         @media (max-width: 768px) {
@@ -1048,6 +1062,37 @@
 
             .edit-btn, .delete-btn, .review-btn {
                 margin-bottom: 0.5rem;
+            }
+
+            .review-section {
+                padding: 1rem;
+                margin: 1rem -1rem;
+                border-radius: 0;
+            }
+
+            .review-card {
+                margin: 0.5rem 0;
+                padding: 1.5rem 1rem;
+            }
+
+            .review-actions {
+                gap: 0.5rem;
+            }
+
+            .review-actions button {
+                flex: 1 1 auto;
+                min-width: 120px;
+                padding: 1rem;
+            }
+
+            .keyboard-shortcuts {
+                display: none; /* Hide keyboard shortcuts on mobile */
+            }
+
+            #start-review-btn {
+                width: 100%;
+                padding: 1rem;
+                font-size: 1.1rem;
             }
         }
     </style>
@@ -1106,7 +1151,7 @@
         <div class="review-section">
             <h2>Review Session</h2>
             <p>Words to review: <span id="review-count">0</span></p>
-            <div id="review-card" class="review-card" style="display: none;">
+            <div id="review-card" class="review-card">
                 <div class="japanese"></div>
                 <div class="reading"></div>
                 <div class="meaning"></div>
@@ -1118,7 +1163,7 @@
                     Keyboard shortcuts: <span>Space/Enter</span> to reveal, <span>→</span> for correct, <span>←</span> for incorrect, <span>Esc</span> to close
                 </div>
             </div>
-            <button id="start-review-btn">Start Review</button>
+            <button id="start-review-btn" class="primary">Start Review</button>
         </div>
 
         <div class="stats">
