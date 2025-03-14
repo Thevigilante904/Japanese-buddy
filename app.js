@@ -443,6 +443,67 @@ function getMasteryColor(mastery) {
     return '#4bc0c0'; // Green
 }
 
+// Function to convert Japanese text to romaji using WanaKana
+async function toRomaji(text) {
+    // Show loading state
+    const loadingText = document.createElement('span');
+    loadingText.className = 'loading-romaji';
+    loadingText.textContent = 'Loading romaji...';
+    
+    try {
+        // Convert using WanaKana
+        const romaji = wanakana.toRomaji(text);
+        return romaji;
+    } catch (error) {
+        console.error('Error converting to romaji:', error);
+        return 'Error loading romaji';
+    }
+}
+
+// Function to update the romaji display for a Japanese text element
+async function updateRomaji(japaneseElement) {
+    const japaneseText = japaneseElement.textContent;
+    
+    // Create or get the romaji element
+    let romajiElement = japaneseElement.querySelector('.romaji');
+    if (!romajiElement) {
+        romajiElement = document.createElement('span');
+        romajiElement.className = 'romaji';
+        japaneseElement.appendChild(romajiElement);
+    }
+    
+    // Show loading state
+    romajiElement.textContent = 'Loading romaji...';
+    romajiElement.className = 'loading-romaji';
+    
+    try {
+        const romaji = await toRomaji(japaneseText);
+        romajiElement.textContent = romaji;
+        romajiElement.className = 'romaji'; // Switch back to normal style
+    } catch (error) {
+        romajiElement.textContent = 'Error loading romaji';
+        romajiElement.className = 'romaji error';
+    }
+}
+
+// Initialize WanaKana for input fields
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize WanaKana on the Japanese input field
+    const japaneseInput = document.getElementById('japanese');
+    if (japaneseInput) {
+        wanakana.bind(japaneseInput);
+    }
+
+    // Initialize WanaKana on the reading input field
+    const readingInput = document.getElementById('reading');
+    if (readingInput) {
+        wanakana.bind(readingInput);
+    }
+
+    // Update romaji for all Japanese text elements
+    document.querySelectorAll('.japanese-text').forEach(updateRomaji);
+});
+
 // Initialize
 document.addEventListener('DOMContentLoaded', async () => {
     // Initialize Kuroshiro first
@@ -478,34 +539,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             const query = e.target.value;
             const filteredWords = vocabManager.searchWords(query);
             updateVocabularyTable(filteredWords);
-        });
-    }
-
-    // Add Japanese input field handlers
-    const japaneseInput = document.getElementById('japanese');
-    const readingInput = document.getElementById('reading');
-
-    if (japaneseInput) {
-        japaneseInput.addEventListener('input', async () => {
-            const romajiPreview = document.createElement('div');
-            romajiPreview.className = 'romaji';
-            romajiPreview.textContent = 'Converting...';
-            japaneseInput.parentNode.appendChild(romajiPreview);
-            
-            const romaji = await getRomaji(japaneseInput.value);
-            romajiPreview.textContent = romaji;
-        });
-    }
-
-    if (readingInput) {
-        readingInput.addEventListener('input', async () => {
-            const romajiPreview = document.createElement('div');
-            romajiPreview.className = 'romaji';
-            romajiPreview.textContent = 'Converting...';
-            readingInput.parentNode.appendChild(romajiPreview);
-            
-            const romaji = await getRomaji(readingInput.value);
-            romajiPreview.textContent = romaji;
         });
     }
 
