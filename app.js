@@ -331,11 +331,69 @@ function getMasteryColor(mastery) {
 document.addEventListener('DOMContentLoaded', () => {
     // Set up event listeners
     document.getElementById('add-word-form').addEventListener('submit', handleAddWord);
+    
+    // Fix search functionality
     document.getElementById('search').addEventListener('input', (e) => {
         const query = e.target.value;
-        vocabManager.vocabulary = vocabManager.searchWords(query);
+        const filteredWords = vocabManager.searchWords(query);
+        vocabManager.vocabulary = filteredWords;
         updateVocabularyTable();
+        vocabManager.loadData(); // Restore original data after search
     });
+
+    // Add export/import handlers
+    document.getElementById('export-btn').addEventListener('click', () => {
+        const data = vocabManager.exportData();
+        const blob = new Blob([data], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'japanese-vocabulary.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    });
+
+    document.getElementById('import-btn').addEventListener('click', () => {
+        document.getElementById('import-modal').style.display = 'flex';
+    });
+
+    document.getElementById('import-confirm').addEventListener('click', () => {
+        const importData = document.getElementById('import-data').value;
+        try {
+            if (vocabManager.importData(importData)) {
+                alert('Data imported successfully!');
+                document.getElementById('import-modal').style.display = 'none';
+                document.getElementById('import-data').value = '';
+                updateUI();
+            } else {
+                alert('Invalid data format. Please check your import data.');
+            }
+        } catch (e) {
+            alert('Error importing data. Please check the format and try again.');
+        }
+    });
+
+    // Add modal close handlers
+    document.querySelectorAll('.modal .close').forEach(closeBtn => {
+        closeBtn.addEventListener('click', () => {
+            closeBtn.closest('.modal').style.display = 'none';
+        });
+    });
+
+    // Close modals when clicking outside
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    });
+
+    // Update accuracy rate
+    document.getElementById('accuracy-rate').textContent = 
+        `${Math.round((vocabManager.stats.correctReviews / Math.max(1, vocabManager.stats.totalReviews)) * 100)}%`;
 
     // Initial UI update
     updateUI();
