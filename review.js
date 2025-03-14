@@ -109,7 +109,7 @@ class ReviewUI {
         this.showCurrentWord();
     }
 
-    showCurrentWord() {
+    async showCurrentWord() {
         if (this.session.isComplete()) {
             this.completeSession();
             return;
@@ -124,16 +124,18 @@ class ReviewUI {
         
         // Update Japanese text with romaji
         const japaneseContainer = card.querySelector('.japanese-text');
+        const japaneseRomaji = await getRomaji(word.japanese);
         japaneseContainer.innerHTML = `
             <div class="japanese">${word.japanese}</div>
-            <span class="romaji">${wanakana.toRomaji(word.japanese)}</span>
+            <span class="romaji">${japaneseRomaji}</span>
         `;
 
         // Update reading with romaji
         const readingContainer = card.querySelector('.reading-container');
+        const readingRomaji = await getRomaji(word.reading);
         readingContainer.innerHTML = `
             <div class="reading">${word.reading}</div>
-            <span class="romaji">${wanakana.toRomaji(word.reading)}</span>
+            <span class="romaji">${readingRomaji}</span>
         `;
         
         card.querySelector('.meaning').textContent = word.meaning;
