@@ -597,6 +597,18 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.japanese-text').forEach(updateRomaji);
 });
 
+// Add these helper functions at the top of the file after the constants
+function addClickAndTouchHandler(element, handler) {
+    if (!element) return;
+    
+    // Add both click and touch events
+    element.addEventListener('click', handler);
+    element.addEventListener('touchend', (e) => {
+        e.preventDefault(); // Prevent double-firing on mobile
+        handler(e);
+    });
+}
+
 // Initialize
 document.addEventListener('DOMContentLoaded', async () => {
     // Initialize Kuroshiro first
@@ -724,12 +736,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             `${Math.round((vocabManager.stats.correctReviews / Math.max(1, vocabManager.stats.totalReviews)) * 100)}%`;
     }
 
-    // Add review functionality event listeners
+    // Add review functionality event listeners with mobile support
     const startReviewBtn = document.getElementById('start-review-btn');
     if (startReviewBtn) {
-        console.log('Adding click listener to start review button');
-        startReviewBtn.addEventListener('click', () => {
-            console.log('Start review button clicked');
+        console.log('Adding click/touch listener to start review button');
+        addClickAndTouchHandler(startReviewBtn, () => {
+            console.log('Start review button activated');
             startReviewSession();
         });
     } else {
@@ -738,55 +750,43 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const correctBtn = document.querySelector('.correct-btn');
     if (correctBtn) {
-        correctBtn.addEventListener('click', () => {
-            console.log('Correct button clicked');
+        addClickAndTouchHandler(correctBtn, () => {
+            console.log('Correct button activated');
             handleReviewResponse(true);
         });
     }
 
     const incorrectBtn = document.querySelector('.incorrect-btn');
     if (incorrectBtn) {
-        incorrectBtn.addEventListener('click', () => {
-            console.log('Incorrect button clicked');
+        addClickAndTouchHandler(incorrectBtn, () => {
+            console.log('Incorrect button activated');
             handleReviewResponse(false);
         });
     }
 
-    // Add keyboard shortcuts for review
-    document.addEventListener('keydown', (e) => {
-        if (!isReviewInProgress) return;
-
-        const reviewCard = document.getElementById('review-card');
-        if (!reviewCard) return;
-
-        switch (e.key) {
-            case ' ':
-            case 'Enter':
-                e.preventDefault();
-                console.log('Revealing meaning');
-                reviewCard.classList.add('revealed');
-                break;
-            case 'ArrowRight':
-                e.preventDefault();
-                if (reviewCard.classList.contains('revealed')) {
-                    console.log('Marking as correct');
-                    handleReviewResponse(true);
-                }
-                break;
-            case 'ArrowLeft':
-                e.preventDefault();
-                if (reviewCard.classList.contains('revealed')) {
-                    console.log('Marking as incorrect');
-                    handleReviewResponse(false);
-                }
-                break;
-            case 'Escape':
-                e.preventDefault();
-                console.log('Ending review session');
-                endReviewSession();
-                break;
-        }
+    // Update other button handlers to use the new helper function
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+        addClickAndTouchHandler(btn, handleEditWord);
     });
+
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+        addClickAndTouchHandler(btn, handleDeleteWord);
+    });
+
+    document.querySelectorAll('.review-btn').forEach(btn => {
+        addClickAndTouchHandler(btn, handleReviewWord);
+    });
+
+    // Add touch support for revealing meaning
+    const reviewCard = document.getElementById('review-card');
+    if (reviewCard) {
+        addClickAndTouchHandler(reviewCard, () => {
+            if (isReviewInProgress && !reviewCard.classList.contains('revealed')) {
+                console.log('Revealing meaning (touch)');
+                reviewCard.classList.add('revealed');
+            }
+        });
+    }
 
     // Initial UI update
     updateUI();
