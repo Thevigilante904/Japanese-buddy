@@ -4,6 +4,10 @@ const REVIEW_INTERVALS = [1, 3, 7, 14, 30, 90, 180]; // Spaced repetition interv
 // Initialize Kuroshiro
 let kuroshiro = null;
 
+// Add these variables at the top of the file, after the constants
+let currentReviewWord = null;
+let isReviewInProgress = false;
+
 async function initializeKuroshiro() {
     kuroshiro = new Kuroshiro();
     await kuroshiro.init(new KuroshiroAnalyzer());
@@ -335,7 +339,74 @@ function updateCategories() {
 
 function updateReviewSection() {
     const reviewWords = vocabManager.getWordsForReview();
-    document.getElementById('review-count').textContent = reviewWords.length;
+    const reviewCount = document.getElementById('review-count');
+    const reviewCard = document.getElementById('review-card');
+    const startReviewBtn = document.getElementById('start-review-btn');
+
+    if (reviewCount) {
+        reviewCount.textContent = reviewWords.length;
+    }
+
+    if (startReviewBtn) {
+        startReviewBtn.style.display = isReviewInProgress ? 'none' : 'block';
+    }
+
+    if (reviewCard) {
+        reviewCard.style.display = isReviewInProgress ? 'block' : 'none';
+    }
+}
+
+function startReviewSession() {
+    const reviewWords = vocabManager.getWordsForReview();
+    if (reviewWords.length === 0) {
+        alert('No words to review at this time!');
+        return;
+    }
+
+    isReviewInProgress = true;
+    showNextReviewWord();
+    updateReviewSection();
+}
+
+function showNextReviewWord() {
+    const reviewWords = vocabManager.getWordsForReview();
+    if (reviewWords.length === 0) {
+        endReviewSession();
+        return;
+    }
+
+    // Pick a random word from the review list
+    const randomIndex = Math.floor(Math.random() * reviewWords.length);
+    currentReviewWord = reviewWords[randomIndex];
+
+    const reviewCard = document.getElementById('review-card');
+    if (reviewCard) {
+        const japaneseElement = reviewCard.querySelector('.japanese');
+        const readingElement = reviewCard.querySelector('.reading');
+        const meaningElement = reviewCard.querySelector('.meaning');
+
+        if (japaneseElement) japaneseElement.textContent = currentReviewWord.japanese;
+        if (readingElement) readingElement.textContent = currentReviewWord.reading;
+        if (meaningElement) meaningElement.textContent = currentReviewWord.meaning;
+
+        // Hide meaning initially
+        reviewCard.classList.remove('revealed');
+    }
+}
+
+function endReviewSession() {
+    isReviewInProgress = false;
+    currentReviewWord = null;
+    updateReviewSection();
+    alert('Review session completed!');
+}
+
+function handleReviewResponse(isCorrect) {
+    if (!currentReviewWord) return;
+
+    vocabManager.reviewWord(currentReviewWord.id, isCorrect);
+    showNextReviewWord();
+    updateUI();
 }
 
 // Event handlers
@@ -629,6 +700,54 @@ document.addEventListener('DOMContentLoaded', async () => {
         accuracyRate.textContent = 
             `${Math.round((vocabManager.stats.correctReviews / Math.max(1, vocabManager.stats.totalReviews)) * 100)}%`;
     }
+
+    // Add review functionality event listeners
+    const startReviewBtn = document.getElementById('start-review-btn');
+    if (startReviewBtn) {
+        startReviewBtn.addEventListener('click', startReviewSession);
+    }
+
+    const correctBtn = document.querySelector('.correct-btn');
+    if (correctBtn) {
+        correctBtn.addEventListener('click', () => handleReviewResponse(true));
+    }
+
+    const incorrectBtn = document.querySelector('.incorrect-btn');
+    if (incorrectBtn) {
+        incorrectBtn.addEventListener('click', () => handleReviewResponse(false));
+    }
+
+    // Add keyboard shortcuts for review
+    document.addEventListener('keydown', (e) => {
+        if (!isReviewInProgress) return;
+
+        const reviewCard = document.getElementById('review-card');
+        if (!reviewCard) return;
+
+        switch (e.key) {
+            case ' ':
+            case 'Enter':
+                e.preventDefault();
+                reviewCard.classList.add('revealed');
+                break;
+            case 'ArrowRight':
+                e.preventDefault();
+                if (reviewCard.classList.contains('revealed')) {
+                    handleReviewResponse(true);
+                }
+                break;
+            case 'ArrowLeft':
+                e.preventDefault();
+                if (reviewCard.classList.contains('revealed')) {
+                    handleReviewResponse(false);
+                }
+                break;
+            case 'Escape':
+                e.preventDefault();
+                endReviewSession();
+                break;
+        }
+    });
 
     // Initial UI update
     updateUI();
