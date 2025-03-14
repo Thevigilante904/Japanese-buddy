@@ -265,40 +265,84 @@ function updateUI() {
 }
 
 function updateVocabularyTable() {
-    const tbody = document.getElementById('vocab-list');
-    tbody.innerHTML = '';
-    
+    const vocabList = document.getElementById('vocab-list');
+    vocabList.innerHTML = '';
+
     if (vocabManager.vocabulary.length === 0) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="4" style="text-align: center; padding: 2rem;">
-                    <p style="color: var(--secondary);">No words added yet. Start by adding your first word!</p>
-                </td>
-            </tr>
-        `;
+        vocabList.innerHTML = '<tr><td colspan="4" style="text-align: center;">No vocabulary words yet. Add your first word!</td></tr>';
         return;
     }
-    
-    vocabManager.vocabulary.forEach(word => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
+
+    vocabManager.vocabulary.forEach((word, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
             <td>
                 <div class="japanese-text">
                     <span class="japanese">${word.japanese}</span>
-                    <span class="romaji">${word.reading}</span>
+                    <span class="romaji">${wanakana.toRomaji(word.japanese)}</span>
                 </div>
             </td>
             <td>${word.reading}</td>
             <td>${word.meaning}</td>
             <td>
-                <div style="display: flex; gap: 0.5rem;">
-                    <button class="edit-btn" data-id="${word.id}">Edit</button>
-                    <button class="delete-btn" data-id="${word.id}">Delete</button>
-                    <button class="review-btn" data-id="${word.id}">Review</button>
+                <div class="actions-dropdown">
+                    <button class="actions-dropdown-btn">Actions</button>
+                    <div class="actions-dropdown-content">
+                        <button class="edit-btn" data-index="${index}">Edit</button>
+                        <button class="delete-btn" data-index="${index}">Delete</button>
+                        <button class="review-btn" data-index="${index}">Review</button>
+                    </div>
                 </div>
             </td>
         `;
-        tbody.appendChild(tr);
+        vocabList.appendChild(row);
+    });
+
+    // Add event listeners for dropdowns
+    document.querySelectorAll('.actions-dropdown').forEach(dropdown => {
+        const btn = dropdown.querySelector('.actions-dropdown-btn');
+        const content = dropdown.querySelector('.actions-dropdown-content');
+
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            // Close all other dropdowns
+            document.querySelectorAll('.actions-dropdown-content.show').forEach(d => {
+                if (d !== content) d.classList.remove('show');
+            });
+            content.classList.toggle('show');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', () => {
+            content.classList.remove('show');
+        });
+
+        // Prevent dropdown from closing when clicking inside
+        content.addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+    });
+
+    // Add event listeners for action buttons
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const index = parseInt(btn.dataset.index);
+            handleEditWord(index);
+        });
+    });
+
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const index = parseInt(btn.dataset.index);
+            handleDeleteWord(index);
+        });
+    });
+
+    document.querySelectorAll('.review-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const index = parseInt(btn.dataset.index);
+            startReview([vocabManager.vocabulary[index]]);
+        });
     });
 }
 
@@ -452,8 +496,8 @@ async function handleAddWord(event) {
 }
 
 function handleEditWord(event) {
-    const id = parseInt(event.target.dataset.id);
-    const word = vocabManager.vocabulary.find(w => w.id === id);
+    const id = parseInt(event.target.dataset.index);
+    const word = vocabManager.vocabulary[id];
     if (!word) return;
 
     // Populate edit form
@@ -471,7 +515,7 @@ function handleEditWord(event) {
     const form = document.getElementById('add-word-form');
     form.onsubmit = (e) => {
         e.preventDefault();
-        vocabManager.updateWord(id, {
+        vocabManager.updateWord(word.id, {
             japanese: document.getElementById('japanese').value,
             reading: document.getElementById('reading').value,
             meaning: document.getElementById('meaning').value,
@@ -487,19 +531,19 @@ function handleEditWord(event) {
 
 function handleDeleteWord(event) {
     if (confirm('Are you sure you want to delete this word?')) {
-        const id = parseInt(event.target.dataset.id);
-        vocabManager.deleteWord(id);
+        const id = parseInt(event.target.dataset.index);
+        vocabManager.deleteWord(vocabManager.vocabulary[id].id);
         updateUI();
     }
 }
 
 function handleReviewWord(event) {
-    const id = parseInt(event.target.dataset.id);
-    const word = vocabManager.vocabulary.find(w => w.id === id);
+    const id = parseInt(event.target.dataset.index);
+    const word = vocabManager.vocabulary[id];
     if (!word) return;
 
     const isCorrect = confirm(`Do you know the meaning of ${word.japanese} (${word.reading})?`);
-    vocabManager.reviewWord(id, isCorrect);
+    vocabManager.reviewWord(word.id, isCorrect);
     updateUI();
 }
 
