@@ -7,6 +7,8 @@ let kuroshiro = null;
 // Add these variables at the top of the file, after the constants
 let currentReviewWord = null;
 let isReviewInProgress = false;
+let currentReviewWords = [];
+let currentReviewIndex = 0;
 
 async function initializeKuroshiro() {
     kuroshiro = new Kuroshiro();
@@ -262,71 +264,41 @@ function updateUI() {
     updateReviewSection();
 }
 
-async function updateVocabularyTable(filteredWords = null) {
-    const vocabList = document.getElementById('vocab-list');
-    if (!vocabList) {
-        console.error('Vocabulary list element not found');
+function updateVocabularyTable() {
+    const tbody = document.getElementById('vocab-list');
+    tbody.innerHTML = '';
+    
+    if (vocabManager.vocabulary.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="4" style="text-align: center; padding: 2rem;">
+                    <p style="color: var(--secondary);">No words added yet. Start by adding your first word!</p>
+                </td>
+            </tr>
+        `;
         return;
     }
-
-    vocabList.innerHTML = '';
-
-    const wordsToDisplay = filteredWords || vocabManager.vocabulary;
-    console.log('Displaying', wordsToDisplay.length, 'words');
-
-    if (wordsToDisplay.length === 0) {
-        const emptyRow = document.createElement('tr');
-        emptyRow.innerHTML = '<td colspan="5" style="text-align: center;">No vocabulary words yet. Add your first word to get started!</td>';
-        vocabList.appendChild(emptyRow);
-        return;
-    }
-
-    for (const word of wordsToDisplay) {
-        const row = document.createElement('tr');
-        const japaneseRomaji = await getRomaji(word.japanese);
-        const readingRomaji = await getRomaji(word.reading);
-        
-        row.innerHTML = `
+    
+    vocabManager.vocabulary.forEach(word => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
             <td>
                 <div class="japanese-text">
-                    ${word.japanese}
-                    <span class="romaji">${japaneseRomaji}</span>
+                    <span class="japanese">${word.japanese}</span>
+                    <span class="romaji">${word.reading}</span>
                 </div>
             </td>
-            <td>
-                <div class="japanese-text">
-                    ${word.reading}
-                    <span class="romaji">${readingRomaji}</span>
-                </div>
-            </td>
+            <td>${word.reading}</td>
             <td>${word.meaning}</td>
             <td>
-                <div class="progress-container" style="height: 10px;">
-                    <div class="progress-bar" style="width: ${word.mastery}%; 
-                         background-color: ${getMasteryColor(word.mastery)};">
-                    </div>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button class="edit-btn" data-id="${word.id}">Edit</button>
+                    <button class="delete-btn" data-id="${word.id}">Delete</button>
+                    <button class="review-btn" data-id="${word.id}">Review</button>
                 </div>
             </td>
-            <td>
-                <button class="edit-btn" data-id="${word.id}">Edit</button>
-                <button class="delete-btn" data-id="${word.id}">Delete</button>
-                <button class="review-btn" data-id="${word.id}">Review</button>
-            </td>
         `;
-        vocabList.appendChild(row);
-    }
-
-    // Add event listeners
-    document.querySelectorAll('.edit-btn').forEach(btn => {
-        btn.addEventListener('click', handleEditWord);
-    });
-
-    document.querySelectorAll('.delete-btn').forEach(btn => {
-        btn.addEventListener('click', handleDeleteWord);
-    });
-
-    document.querySelectorAll('.review-btn').forEach(btn => {
-        btn.addEventListener('click', handleReviewWord);
+        tbody.appendChild(tr);
     });
 }
 
@@ -370,65 +342,67 @@ function updateReviewSection() {
     }
 }
 
-function startReviewSession() {
-    console.log('Starting review session...');
-    const reviewWords = vocabManager.getWordsForReview();
-    console.log('Words to review:', reviewWords.length);
+function showReviewCard(word) {
+    const reviewCard = document.getElementById('review-card');
+    const meaningElement = reviewCard.querySelector('.meaning');
+    const revealButton = document.getElementById('reveal-answer-btn');
     
-    if (reviewWords.length === 0) {
+    // Reset the card state
+    meaningElement.classList.add('hidden');
+    revealButton.classList.remove('hidden');
+    
+    // Update card content
+    reviewCard.querySelector('.japanese-text').textContent = word.japanese;
+    reviewCard.querySelector('.reading').textContent = word.reading;
+    meaningElement.textContent = word.meaning;
+    
+    // Show the card
+    reviewCard.style.display = 'block';
+}
+
+function startReviewSession() {
+    console.log('Starting review session');
+    const wordsToReview = vocabManager.getWordsForReview();
+    
+    if (wordsToReview.length === 0) {
         alert('No words to review at this time!');
         return;
     }
-
+    
     isReviewInProgress = true;
-    updateReviewSection();
-    showNextReviewWord();
-    console.log('Review session started');
+    currentReviewWords = wordsToReview;
+    currentReviewIndex = 0;
+    
+    showReviewCard(currentReviewWords[currentReviewIndex]);
+    document.getElementById('start-review-btn').style.display = 'none';
+    document.getElementById('review-card').style.display = 'block';
 }
 
-function showNextReviewWord() {
-    console.log('Showing next review word...');
-    const reviewWords = vocabManager.getWordsForReview();
-    if (reviewWords.length === 0) {
-        endReviewSession();
-        return;
-    }
-
-    // Pick a random word from the review list
-    const randomIndex = Math.floor(Math.random() * reviewWords.length);
-    currentReviewWord = reviewWords[randomIndex];
-    console.log('Selected word:', currentReviewWord);
-
-    const reviewCard = document.getElementById('review-card');
-    if (reviewCard) {
-        const japaneseElement = reviewCard.querySelector('.japanese');
-        const readingElement = reviewCard.querySelector('.reading');
-        const meaningElement = reviewCard.querySelector('.meaning');
-
-        if (japaneseElement) japaneseElement.textContent = currentReviewWord.japanese;
-        if (readingElement) readingElement.textContent = currentReviewWord.reading;
-        if (meaningElement) meaningElement.textContent = currentReviewWord.meaning;
-
-        // Hide meaning initially
-        reviewCard.classList.remove('revealed');
-        console.log('Review card updated');
+function handleReviewResponse(isCorrect) {
+    if (!isReviewInProgress || currentReviewIndex >= currentReviewWords.length) return;
+    
+    const word = currentReviewWords[currentReviewIndex];
+    vocabManager.reviewWord(word.id, isCorrect);
+    
+    currentReviewIndex++;
+    
+    if (currentReviewIndex < currentReviewWords.length) {
+        showReviewCard(currentReviewWords[currentReviewIndex]);
     } else {
-        console.error('Review card element not found');
+        endReviewSession();
     }
+    
+    updateUI();
 }
 
 function endReviewSession() {
     isReviewInProgress = false;
-    currentReviewWord = null;
-    updateReviewSection();
-    alert('Review session completed!');
-}
-
-function handleReviewResponse(isCorrect) {
-    if (!currentReviewWord) return;
-
-    vocabManager.reviewWord(currentReviewWord.id, isCorrect);
-    showNextReviewWord();
+    currentReviewWords = [];
+    currentReviewIndex = 0;
+    
+    document.getElementById('review-card').style.display = 'none';
+    document.getElementById('start-review-btn').style.display = 'block';
+    
     updateUI();
 }
 
@@ -869,6 +843,45 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         });
     }
+
+    // Add reveal button handler
+    const revealButton = document.getElementById('reveal-answer-btn');
+    if (revealButton) {
+        addClickAndTouchHandler(revealButton, () => {
+            if (isReviewInProgress) {
+                const meaningElement = document.querySelector('.meaning');
+                const revealButton = document.getElementById('reveal-answer-btn');
+                
+                meaningElement.classList.remove('hidden');
+                revealButton.classList.add('hidden');
+            }
+        });
+    }
+    
+    // Update keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+        if (isReviewInProgress) {
+            if (e.code === 'Space' || e.code === 'Enter') {
+                e.preventDefault();
+                const meaningElement = document.querySelector('.meaning');
+                const revealButton = document.getElementById('reveal-answer-btn');
+                
+                if (meaningElement.classList.contains('hidden')) {
+                    meaningElement.classList.remove('hidden');
+                    revealButton.classList.add('hidden');
+                }
+            } else if (e.code === 'ArrowRight') {
+                e.preventDefault();
+                handleReviewResponse(true);
+            } else if (e.code === 'ArrowLeft') {
+                e.preventDefault();
+                handleReviewResponse(false);
+            } else if (e.code === 'Escape') {
+                e.preventDefault();
+                endReviewSession();
+            }
+        }
+    });
 
     // Initial UI update
     updateUI();
