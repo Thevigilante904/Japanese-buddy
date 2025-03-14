@@ -1,8 +1,17 @@
 class ReviewSession {
     constructor(words) {
-        this.words = words;
+        this.words = this.shuffleArray(words);
         this.currentIndex = 0;
         this.results = [];
+    }
+
+    shuffleArray(array) {
+        const newArray = [...array];
+        for (let i = newArray.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+        }
+        return newArray;
     }
 
     getCurrentWord() {
@@ -38,6 +47,7 @@ class ReviewUI {
     constructor(vocabManager) {
         this.vocabManager = vocabManager;
         this.session = null;
+        this.isAnswerRevealed = false;
         this.setupEventListeners();
     }
 
@@ -54,6 +64,36 @@ class ReviewUI {
         closeBtn.addEventListener('click', () => this.closeSession());
         correctBtn.addEventListener('click', () => this.handleAnswer(true));
         incorrectBtn.addEventListener('click', () => this.handleAnswer(false));
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (!this.session || !modal.style.display || modal.style.display === 'none') return;
+
+            switch(e.key.toLowerCase()) {
+                case ' ':
+                case 'enter':
+                    e.preventDefault();
+                    if (!this.isAnswerRevealed) {
+                        this.revealAnswer();
+                    }
+                    break;
+                case 'arrowleft':
+                case '1':
+                    if (this.isAnswerRevealed) {
+                        this.handleAnswer(false);
+                    }
+                    break;
+                case 'arrowright':
+                case '2':
+                    if (this.isAnswerRevealed) {
+                        this.handleAnswer(true);
+                    }
+                    break;
+                case 'escape':
+                    this.closeSession();
+                    break;
+            }
+        });
     }
 
     startSession() {
@@ -79,6 +119,7 @@ class ReviewUI {
         const card = document.querySelector('.review-card');
         const currentWordNum = document.getElementById('current-word');
         
+        this.isAnswerRevealed = false;
         card.classList.remove('revealed');
         card.querySelector('.japanese').textContent = word.japanese;
         card.querySelector('.reading').textContent = word.reading;
@@ -88,15 +129,23 @@ class ReviewUI {
         
         document.getElementById('reveal-btn').style.display = 'block';
         document.querySelector('.review-buttons').style.display = 'none';
+
+        // Add keyboard shortcut hints
+        document.getElementById('reveal-btn').textContent = 'Reveal Answer (Space/Enter)';
+        document.querySelector('.correct').textContent = 'Correct (→/2)';
+        document.querySelector('.incorrect').textContent = 'Incorrect (←/1)';
     }
 
     revealAnswer() {
+        this.isAnswerRevealed = true;
         document.querySelector('.review-card').classList.add('revealed');
         document.getElementById('reveal-btn').style.display = 'none';
         document.querySelector('.review-buttons').style.display = 'flex';
     }
 
     handleAnswer(isCorrect) {
+        if (!this.isAnswerRevealed) return;
+        
         const word = this.session.getCurrentWord();
         this.vocabManager.reviewWord(word.id, isCorrect);
         this.session.recordResult(isCorrect);
@@ -105,7 +154,12 @@ class ReviewUI {
 
     completeSession() {
         const stats = this.session.getStats();
-        alert(`Review session complete!\nAccuracy: ${stats.accuracy}%\nCorrect: ${stats.correct}/${stats.total}`);
+        const message = `Review session complete!\n\n` +
+                       `Accuracy: ${stats.accuracy}%\n` +
+                       `Correct: ${stats.correct}/${stats.total}\n\n` +
+                       `Keep up the good work! 頑張って!`;
+        
+        alert(message);
         document.getElementById('review-modal').style.display = 'none';
         this.session = null;
         updateUI(); // Update main UI stats
@@ -113,7 +167,7 @@ class ReviewUI {
 
     closeSession() {
         if (this.session && !this.session.isComplete()) {
-            if (confirm('Are you sure you want to end this review session?')) {
+            if (confirm('Are you sure you want to end this review session? (Esc)')) {
                 document.getElementById('review-modal').style.display = 'none';
                 this.session = null;
             }
