@@ -75,8 +75,12 @@ class VocabularyManager {
     }
 
     reviewWord(id, isCorrect) {
+        console.log('Reviewing word with ID:', id, 'Correct:', isCorrect);
         const word = this.vocabulary.find(w => w.id === id);
-        if (!word) return;
+        if (!word) {
+            console.error('Word not found for review:', id);
+            return;
+        }
 
         this.stats.totalReviews++;
         if (isCorrect) {
@@ -92,33 +96,43 @@ class VocabularyManager {
         word.nextReview = new Date();
         word.nextReview.setDate(word.nextReview.getDate() + REVIEW_INTERVALS[word.reviewLevel]);
         
+        console.log('Updated word:', word);
         this.updateStreak();
         this.saveData();
     }
 
     getWordsForReview() {
         const now = new Date();
-        return this.vocabulary.filter(word => 
-            !word.nextReview || word.nextReview <= now
+        const reviewWords = this.vocabulary.filter(word => 
+            !word.nextReview || new Date(word.nextReview) <= now
         );
+        console.log('Found words for review:', reviewWords.length);
+        console.log('Review words:', reviewWords);
+        return reviewWords;
     }
 
     updateStreak() {
         const today = new Date().toDateString();
         const lastStudy = this.stats.lastStudy ? new Date(this.stats.lastStudy).toDateString() : null;
 
-        if (lastStudy === today) return;
+        if (lastStudy === today) {
+            console.log('Already studied today, keeping current streak');
+            return;
+        }
 
         if (lastStudy) {
             const yesterday = new Date();
             yesterday.setDate(yesterday.getDate() - 1);
             if (lastStudy === yesterday.toDateString()) {
                 this.stats.streak++;
+                console.log('Continued streak:', this.stats.streak);
             } else {
                 this.stats.streak = 1;
+                console.log('Reset streak to 1');
             }
         } else {
             this.stats.streak = 1;
+            console.log('Started new streak');
         }
 
         this.stats.lastStudy = new Date();
@@ -357,7 +371,10 @@ function updateReviewSection() {
 }
 
 function startReviewSession() {
+    console.log('Starting review session...');
     const reviewWords = vocabManager.getWordsForReview();
+    console.log('Words to review:', reviewWords.length);
+    
     if (reviewWords.length === 0) {
         alert('No words to review at this time!');
         return;
@@ -366,9 +383,11 @@ function startReviewSession() {
     isReviewInProgress = true;
     updateReviewSection();
     showNextReviewWord();
+    console.log('Review session started');
 }
 
 function showNextReviewWord() {
+    console.log('Showing next review word...');
     const reviewWords = vocabManager.getWordsForReview();
     if (reviewWords.length === 0) {
         endReviewSession();
@@ -378,6 +397,7 @@ function showNextReviewWord() {
     // Pick a random word from the review list
     const randomIndex = Math.floor(Math.random() * reviewWords.length);
     currentReviewWord = reviewWords[randomIndex];
+    console.log('Selected word:', currentReviewWord);
 
     const reviewCard = document.getElementById('review-card');
     if (reviewCard) {
@@ -391,6 +411,9 @@ function showNextReviewWord() {
 
         // Hide meaning initially
         reviewCard.classList.remove('revealed');
+        console.log('Review card updated');
+    } else {
+        console.error('Review card element not found');
     }
 }
 
@@ -704,17 +727,29 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Add review functionality event listeners
     const startReviewBtn = document.getElementById('start-review-btn');
     if (startReviewBtn) {
-        startReviewBtn.addEventListener('click', startReviewSession);
+        console.log('Adding click listener to start review button');
+        startReviewBtn.addEventListener('click', () => {
+            console.log('Start review button clicked');
+            startReviewSession();
+        });
+    } else {
+        console.error('Start review button not found');
     }
 
     const correctBtn = document.querySelector('.correct-btn');
     if (correctBtn) {
-        correctBtn.addEventListener('click', () => handleReviewResponse(true));
+        correctBtn.addEventListener('click', () => {
+            console.log('Correct button clicked');
+            handleReviewResponse(true);
+        });
     }
 
     const incorrectBtn = document.querySelector('.incorrect-btn');
     if (incorrectBtn) {
-        incorrectBtn.addEventListener('click', () => handleReviewResponse(false));
+        incorrectBtn.addEventListener('click', () => {
+            console.log('Incorrect button clicked');
+            handleReviewResponse(false);
+        });
     }
 
     // Add keyboard shortcuts for review
@@ -728,22 +763,26 @@ document.addEventListener('DOMContentLoaded', async () => {
             case ' ':
             case 'Enter':
                 e.preventDefault();
+                console.log('Revealing meaning');
                 reviewCard.classList.add('revealed');
                 break;
             case 'ArrowRight':
                 e.preventDefault();
                 if (reviewCard.classList.contains('revealed')) {
+                    console.log('Marking as correct');
                     handleReviewResponse(true);
                 }
                 break;
             case 'ArrowLeft':
                 e.preventDefault();
                 if (reviewCard.classList.contains('revealed')) {
+                    console.log('Marking as incorrect');
                     handleReviewResponse(false);
                 }
                 break;
             case 'Escape':
                 e.preventDefault();
+                console.log('Ending review session');
                 endReviewSession();
                 break;
         }
