@@ -4,73 +4,158 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>日本語 Vocabulary Tracker</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap">
     <style>
         :root {
-            --primary: #ff6384;
-            --secondary: #36a2eb;
-            --success: #4bc0c0;
-            --dark: #333;
-            --light: #f8f9fa;
+            --primary: #D64545;
+            --secondary: #1B4B66;
+            --success: #4E6E58;
+            --dark: #2D2D2D;
+            --light: #F5F5F5;
+            --accent: #E8B62E;
+            --paper: #FFFAF0;
         }
-    
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Noto Sans JP', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
             background-color: var(--light);
             color: var(--dark);
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)),
+                url('data:image/svg+xml;utf8,<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="1" fill="%23D64545" opacity="0.2"/></svg>');
+            background-size: 20px 20px;
         }
         
         header {
             background-color: var(--primary);
             color: white;
-            padding: 1rem;
+            padding: 2rem 1rem;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+            background-image: 
+                linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1));
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
         }
         
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 1rem;
+            width: 100%;
+            box-sizing: border-box;
         }
         
         .dashboard {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr;
             gap: 1rem;
         }
         
-        @media (max-width: 768px) {
+        @media (min-width: 768px) {
             .dashboard {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr 1fr;
             }
         }
         
         .card {
-            background-color: white;
+            background-color: var(--paper);
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             padding: 1.5rem;
             margin-bottom: 1rem;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(214, 69, 69, 0.03));
+            pointer-events: none;
         }
         
         .stats {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: 1fr;
             gap: 1rem;
+            margin-bottom: 1rem;
+            width: 100%;
+        }
+        
+        @media (min-width: 768px) {
+            .stats {
+                grid-template-columns: repeat(3, 1fr);
+            }
         }
         
         .stat-card {
-            background-color: white;
+            background-color: var(--paper);
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 1rem;
+            padding: 1.5rem;
             text-align: center;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 50% 50%, rgba(214, 69, 69, 0.03) 0%, transparent 70%);
+            transform: rotate(45deg);
+            pointer-events: none;
         }
         
         .stat-card h3 {
             margin-top: 0;
             color: var(--dark);
+            font-size: 1.1rem;
         }
         
         .stat-card p {
@@ -83,16 +168,28 @@
         h2 {
             margin-top: 0;
             color: var(--primary);
+            font-size: 1.5rem;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin: 1rem 0;
         }
         
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 1rem;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
         }
         
         th, td {
-            padding: 0.75rem;
+            padding: 1rem;
             text-align: left;
             border-bottom: 1px solid #ddd;
         }
@@ -100,17 +197,18 @@
         th {
             background-color: var(--secondary);
             color: white;
+            font-weight: 500;
         }
         
         tr:hover {
-            background-color: #f5f5f5;
+            background-color: rgba(0, 0, 0, 0.02);
         }
         
         .tag {
             display: inline-block;
             background-color: var(--success);
             color: white;
-            padding: 0.25rem 0.5rem;
+            padding: 0.25rem 0.75rem;
             border-radius: 20px;
             font-size: 0.8rem;
             margin-right: 0.25rem;
@@ -118,23 +216,61 @@
         
         .actions {
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            gap: 1rem;
             margin-bottom: 1rem;
+            width: 100%;
+        }
+
+        @media (min-width: 768px) {
+            .actions {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+
+        @media (max-width: 767px) {
+            .button-group {
+                flex-direction: column;
+            }
+
+            .button-group button {
+                width: 100%;
+            }
+
+            #search {
+                width: 100%;
+            }
         }
         
         button, .button {
             background-color: var(--secondary);
             color: white;
             border: none;
-            padding: 0.5rem 1rem;
+            padding: 0.75rem 1.25rem;
             border-radius: 4px;
             cursor: pointer;
             font-size: 1rem;
-            transition: background-color 0.2s;
+            transition: all 0.2s;
+            font-family: 'Noto Sans JP', sans-serif;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 120px;
+            white-space: nowrap;
         }
         
         button:hover, .button:hover {
-            background-color: #2980b9;
+            background-color: #2c3e50;
+            transform: translateY(-1px);
         }
         
         .primary {
@@ -142,14 +278,30 @@
         }
         
         .primary:hover {
-            background-color: #e74c3c;
+            background-color: #c13c3c;
+        }
+
+        .success {
+            background-color: var(--success);
+        }
+
+        .success:hover {
+            background-color: #3d5a47;
         }
         
-        input, select {
-            padding: 0.5rem;
-            border: 1px solid #ddd;
+        input, select, textarea {
+            padding: 0.75rem;
+            border: 2px solid #ddd;
             border-radius: 4px;
             font-size: 1rem;
+            width: 100%;
+            font-family: 'Noto Sans JP', sans-serif;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary);
+            outline: none;
         }
         
         .modal {
@@ -162,39 +314,98 @@
             background-color: rgba(0, 0, 0, 0.5);
             justify-content: center;
             align-items: center;
+            padding: 1rem;
         }
         
         .modal-content {
+            background-color: var(--paper);
+            padding: 2rem;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .review-modal .modal-content {
+            text-align: center;
+        }
+        
+        .review-card {
             background-color: white;
             padding: 2rem;
             border-radius: 8px;
-            width: 90%;
-            max-width: 500px;
+            margin: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border: 1px solid #eee;
+        }
+        
+        .review-card .japanese {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+        
+        .review-card .reading {
+            font-size: 1.5rem;
+            color: var(--secondary);
+            margin-bottom: 1rem;
+        }
+        
+        .review-card .meaning {
+            font-size: 1.2rem;
+            display: none;
+            color: var(--success);
+        }
+        
+        .review-card.revealed .meaning {
+            display: block;
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .review-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+        
+        .review-progress {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            color: var(--secondary);
         }
         
         .form-group {
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
         }
         
         .form-group label {
             display: block;
             margin-bottom: 0.5rem;
-            font-weight: bold;
-        }
-        
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%;
-            padding: 0.5rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 1rem;
+            font-weight: 500;
+            color: var(--dark);
         }
         
         .close {
-            float: right;
+            position: absolute;
+            right: 1.5rem;
+            top: 1rem;
             font-size: 1.5rem;
             font-weight: bold;
             cursor: pointer;
+            color: var(--dark);
+            opacity: 0.5;
+            transition: opacity 0.2s;
+        }
+
+        .close:hover {
+            opacity: 1;
         }
         
         .progress-container {
@@ -202,16 +413,80 @@
             background-color: #e0e0e0;
             border-radius: 10px;
             margin: 1rem 0;
+            overflow: hidden;
         }
         
         .progress-bar {
             height: 100%;
             border-radius: 10px;
-            background-color: var(--secondary);
+            background-color: var(--success);
+            transition: width 0.3s ease;
+        }
+
+        .accuracy {
+            font-size: 0.9rem;
+            color: var(--secondary);
+            margin-top: 0.5rem;
+        }
+
+        #search {
+            max-width: 100%;
+            background-color: white;
+        }
+
+        @media (min-width: 768px) {
+            #search {
+                max-width: 300px;
+            }
+        }
+
+        .categories-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .categories-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .categories-list li:last-child {
+            border-bottom: none;
+        }
+
+        .japanese-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            transition: opacity 1s ease;
+        }
+
+        @media (max-width: 767px) {
+            .stat-card {
+                width: 100%;
+                margin-bottom: 1rem;
+            }
+
+            header h1 {
+                font-size: 2rem;
+                padding: 0 1rem;
+            }
+
+            header p {
+                padding: 0 1rem;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="japanese-pattern"></div>
     <header>
         <h1>日本語 Vocabulary Tracker</h1>
         <p>Track your Japanese language learning journey</p>
@@ -220,7 +495,11 @@
     <div class="container">
         <div class="actions">
             <input type="text" id="search" placeholder="Search vocabulary...">
-            <button class="primary" id="add-word-btn">Add New Word</button>
+            <div class="button-group">
+                <button class="primary" id="add-word-btn">Add New Word</button>
+                <button id="export-btn">Export Data</button>
+                <button id="import-btn">Import Data</button>
+            </div>
         </div>
         
         <div class="stats">
@@ -236,27 +515,30 @@
             <div class="stat-card">
                 <h3>Mastery Rate</h3>
                 <p id="mastery-rate">0%</p>
+                <div class="accuracy">Accuracy: <span id="accuracy-rate">0%</span></div>
             </div>
         </div>
         
         <div class="dashboard">
             <div class="card">
                 <h2>Recent Vocabulary</h2>
-                <table id="vocab-table">
-                    <thead>
-                        <tr>
-                            <th>Japanese</th>
-                            <th>Reading</th>
-                            <th>Meaning</th>
-                            <th>Category</th>
-                            <th>Mastery</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="vocab-list">
-                        <!-- Vocabulary entries will be added here -->
-                    </tbody>
-                </table>
+                <div class="table-container">
+                    <table id="vocab-table">
+                        <thead>
+                            <tr>
+                                <th>Japanese</th>
+                                <th>Reading</th>
+                                <th>Meaning</th>
+                                <th>Category</th>
+                                <th>Mastery</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="vocab-list">
+                            <!-- Vocabulary entries will be added here -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
             
             <div class="card">
@@ -317,183 +599,46 @@
             </form>
         </div>
     </div>
-    
+
+    <!-- Review Session Modal -->
+    <div id="review-modal" class="modal review-modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Review Session</h2>
+            <div class="review-progress">
+                Word <span id="current-word">1</span> of <span id="total-words-review">0</span>
+            </div>
+            <div class="review-card">
+                <div class="japanese"></div>
+                <div class="reading"></div>
+                <div class="meaning"></div>
+            </div>
+            <button id="reveal-btn">Reveal Answer</button>
+            <div class="review-buttons" style="display: none;">
+                <button class="incorrect">Incorrect</button>
+                <button class="correct">Correct</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Modal -->
+    <div id="import-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Import Data</h2>
+            <div class="form-group">
+                <label for="import-data">Paste your exported data here:</label>
+                <textarea id="import-data" rows="10"></textarea>
+            </div>
+            <button id="import-confirm" class="primary">Import</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script src="review.js"></script>
+    <script src="patterns.js"></script>
     <script>
-        // Sample vocabulary data
-        let vocabulary = [
-            { id: 1, japanese: '猫', reading: 'ねこ', meaning: 'cat', category: 'noun', mastery: 80, dateAdded: new Date(2024, 2, 10), notes: 'Common pet animal' },
-            { id: 2, japanese: '行く', reading: 'いく', meaning: 'to go', category: 'verb', mastery: 65, dateAdded: new Date(2024, 2, 11), notes: 'Irregular verb' },
-            { id: 3, japanese: '美しい', reading: 'うつくしい', meaning: 'beautiful', category: 'adjective', mastery: 40, dateAdded: new Date(2024, 2, 12), notes: 'i-adjective' },
-            { id: 4, japanese: 'おはよう', reading: 'おはよう', meaning: 'good morning', category: 'expression', mastery: 95, dateAdded: new Date(2024, 2, 13), notes: 'Casual greeting' },
-            { id: 5, japanese: '水', reading: 'みず', meaning: 'water', category: 'noun', mastery: 90, dateAdded: new Date(2024, 2, 14), notes: '' }
-        ];
-        
-        // User stats
-        let userStats = {
-            streak: 5,
-            lastStudy: new Date(),
-            reviewSchedule: []
-        };
-        
-        // DOM elements
-        const vocabList = document.getElementById('vocab-list');
-        const totalWords = document.getElementById('total-words');
-        const studyStreak = document.getElementById('study-streak');
-        const masteryRate = document.getElementById('mastery-rate');
-        const progressBar = document.getElementById('progress-bar');
-        const reviewCount = document.getElementById('review-count');
-        const categoriesList = document.getElementById('categories-list');
-        
-        // Modal elements
-        const addWordBtn = document.getElementById('add-word-btn');
-        const addWordModal = document.getElementById('add-word-modal');
-        const closeBtn = document.querySelector('.close');
-        const addWordForm = document.getElementById('add-word-form');
-        
-        // Update UI
-        function updateUI() {
-            // Clear table
-            vocabList.innerHTML = '';
-            
-            // Add vocabulary to table
-            vocabulary.forEach(word => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${word.japanese}</td>
-                    <td>${word.reading}</td>
-                    <td>${word.meaning}</td>
-                    <td><span class="tag">${word.category}</span></td>
-                    <td>
-                        <div class="progress-container" style="height: 10px;">
-                            <div class="progress-bar" style="width: ${word.mastery}%; background-color: ${getMasteryColor(word.mastery)};"></div>
-                        </div>
-                    </td>
-                    <td>
-                        <button class="edit-btn" data-id="${word.id}">Edit</button>
-                        <button class="review-btn" data-id="${word.id}">Review</button>
-                    </td>
-                `;
-                vocabList.appendChild(row);
-            });
-            
-            // Update stats
-            totalWords.textContent = vocabulary.length;
-            studyStreak.textContent = userStats.streak;
-            
-            // Calculate average mastery
-            const totalMastery = vocabulary.reduce((sum, word) => sum + word.mastery, 0);
-            const avgMastery = vocabulary.length > 0 ? Math.round(totalMastery / vocabulary.length) : 0;
-            masteryRate.textContent = `${avgMastery}%`;
-            progressBar.style.width = `${avgMastery}%`;
-            
-            // Update review count (mock data)
-            reviewCount.textContent = Math.floor(Math.random() * 10);
-            
-            // Update categories
-            updateCategories();
-            
-            // Save to localStorage
-            saveData();
-        }
-        
-        // Get color based on mastery level
-        function getMasteryColor(mastery) {
-            if (mastery < 30) return '#ff6384'; // Red
-            if (mastery < 70) return '#ffcd56'; // Yellow
-            return '#4bc0c0'; // Green
-        }
-        
-        // Update categories list
-        function updateCategories() {
-            // Group by category
-            const categories = {};
-            vocabulary.forEach(word => {
-                if (!categories[word.category]) {
-                    categories[word.category] = 0;
-                }
-                categories[word.category]++;
-            });
-            
-            // Update list
-            categoriesList.innerHTML = '';
-            for (const category in categories) {
-                const li = document.createElement('li');
-                li.textContent = `${category}: ${categories[category]} words`;
-                categoriesList.appendChild(li);
-            }
-        }
-        
-        // Save data to localStorage
-        function saveData() {
-            localStorage.setItem('vocabulary', JSON.stringify(vocabulary));
-            localStorage.setItem('userStats', JSON.stringify(userStats));
-        }
-        
-        // Load data from localStorage
-        function loadData() {
-            const savedVocab = localStorage.getItem('vocabulary');
-            const savedStats = localStorage.getItem('userStats');
-            
-            if (savedVocab) {
-                vocabulary = JSON.parse(savedVocab);
-                // Convert date strings back to Date objects
-                vocabulary.forEach(word => {
-                    word.dateAdded = new Date(word.dateAdded);
-                });
-            }
-            
-            if (savedStats) {
-                userStats = JSON.parse(savedStats);
-                userStats.lastStudy = new Date(userStats.lastStudy);
-            }
-        }
-        
-        // Add new word
-        function addWord(event) {
-            event.preventDefault();
-            
-            const newWord = {
-                id: Date.now(),
-                japanese: document.getElementById('japanese').value,
-                reading: document.getElementById('reading').value,
-                meaning: document.getElementById('meaning').value,
-                category: document.getElementById('category').value,
-                notes: document.getElementById('notes').value,
-                mastery: 0,
-                dateAdded: new Date()
-            };
-            
-            vocabulary.push(newWord);
-            addWordModal.style.display = 'none';
-            addWordForm.reset();
-            updateUI();
-        }
-        
-        // Modal event listeners
-        addWordBtn.addEventListener('click', () => {
-            addWordModal.style.display = 'flex';
-        });
-        
-        closeBtn.addEventListener('click', () => {
-            addWordModal.style.display = 'none';
-        });
-        
-        window.addEventListener('click', (event) => {
-            if (event.target === addWordModal) {
-                addWordModal.style.display = 'none';
-            }
-        });
-        
-        addWordForm.addEventListener('submit', addWord);
-        
-        // Initialize app
-        loadData();
-        updateUI();
-        
-        // GitHub integration placeholder
-        document.getElementById('start-review').addEventListener('click', () => {
-            alert('This would start a review session.\n\nTo save your data to GitHub, you would need to implement the GitHub API integration or export data as JSON for manual commits.');
-        });
+        // Remove the sample vocabulary data and other script content since it's now in app.js
     </script>
 </body>
 </html>
