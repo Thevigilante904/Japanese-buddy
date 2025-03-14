@@ -627,12 +627,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (modal) {
                 modal.style.display = 'flex';
                 // Reset form when opening modal
-                document.getElementById('add-word-form').reset();
+                const form = document.getElementById('add-word-form');
+                if (form) {
+                    form.reset();
+                }
             }
         });
     }
 
-    // Add form submission handler
+    // Set up form submission handler
     const addWordForm = document.getElementById('add-word-form');
     if (addWordForm) {
         console.log('Setting up form submission handler');
@@ -645,6 +648,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             const meaning = document.getElementById('meaning').value;
             const category = 'General'; // Default category
             const notes = document.getElementById('notes').value;
+
+            console.log('Form values:', { japanese, reading, meaning, category, notes });
 
             if (!japanese || !reading || !meaning) {
                 alert('Please fill in all required fields (Japanese, Reading, and Meaning)');
@@ -667,7 +672,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (modal) {
                     modal.style.display = 'none';
                 }
-                addWordForm.reset();
+                event.target.reset();
                 
                 // Update UI
                 updateUI();
