@@ -50,6 +50,9 @@
             background-size: 40px 40px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
         }
 
         header::before {
@@ -61,6 +64,11 @@
             bottom: 0;
             background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
             pointer-events: none;
+        }
+
+        .header-content {
+            flex-grow: 1;
+            text-align: center;
         }
 
         header h1 {
@@ -644,30 +652,10 @@
             background-color: #2c3e50;
         }
 
-        .nav-bar {
-            background-color: var(--secondary);
-            padding: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-        }
-
-        .nav-brand {
-            color: white;
-            text-decoration: none;
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-
         .nav-menu {
             position: relative;
             display: inline-block;
+            margin-top: 0.5rem;
         }
 
         .nav-menu-btn {
@@ -680,11 +668,11 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            opacity: 0.9;
         }
 
         .nav-menu-btn:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
+            opacity: 1;
         }
 
         .nav-menu-content {
@@ -1058,7 +1046,17 @@
     </style>
 </head>
 <body>
-    <nav class="nav-bar">
+    <header>
+        <div class="header-content">
+            <h1>
+                <span class="japanese-text">
+                    日本語
+                    <span class="romaji">nihongo</span>
+                </span>
+                <span>Vocabulary Tracker</span>
+            </h1>
+            <p>Journey through the beauty of Japanese language, one word at a time</p>
+        </div>
         <div class="nav-menu">
             <button class="nav-menu-btn">
                 Menu
@@ -1072,17 +1070,6 @@
                 <!-- Add more menu items here as needed -->
             </div>
         </div>
-    </nav>
-
-    <header>
-        <h1>
-            <span class="japanese-text">
-                日本語
-                <span class="romaji">nihongo</span>
-            </span>
-            <span>Vocabulary Tracker</span>
-        </h1>
-        <p>Journey through the beauty of Japanese language, one word at a time</p>
     </header>
 
     <div class="container">
