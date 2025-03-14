@@ -352,7 +352,7 @@ function updateReviewSection() {
     }
 
     if (reviewCard) {
-        reviewCard.style.display = isReviewInProgress ? 'block' : 'none';
+        reviewCard.classList.toggle('show', isReviewInProgress);
     }
 }
 
@@ -364,8 +364,8 @@ function startReviewSession() {
     }
 
     isReviewInProgress = true;
-    showNextReviewWord();
     updateReviewSection();
+    showNextReviewWord();
 }
 
 function showNextReviewWord() {
