@@ -1,6 +1,26 @@
 // Constants
 const REVIEW_INTERVALS = [1, 3, 7, 14, 30, 90, 180]; // Spaced repetition intervals in days
 
+// Initialize Kuroshiro
+let kuroshiro = null;
+
+async function initializeKuroshiro() {
+    kuroshiro = new Kuroshiro();
+    await kuroshiro.init(new KuroshiroAnalyzer());
+}
+
+async function getRomaji(text) {
+    if (!kuroshiro) {
+        return 'Loading...';
+    }
+    try {
+        return await kuroshiro.convert(text, { to: 'romaji', mode: 'spaced' });
+    } catch (error) {
+        console.error('Error converting to romaji:', error);
+        return text;
+    }
+}
+
 // Data structures
 class VocabularyItem {
     constructor(japanese, reading, meaning, category, notes = '') {
@@ -184,23 +204,26 @@ function updateUI() {
     updateReviewSection();
 }
 
-function updateVocabularyTable() {
+async function updateVocabularyTable() {
     const vocabList = document.getElementById('vocab-list');
     vocabList.innerHTML = '';
 
-    vocabManager.vocabulary.forEach(word => {
+    for (const word of vocabManager.vocabulary) {
         const row = document.createElement('tr');
+        const japaneseRomaji = await getRomaji(word.japanese);
+        const readingRomaji = await getRomaji(word.reading);
+        
         row.innerHTML = `
             <td>
                 <div class="japanese-text">
                     ${word.japanese}
-                    <span class="romaji">${wanakana.toRomaji(word.reading)}</span>
+                    <span class="romaji">${japaneseRomaji}</span>
                 </div>
             </td>
             <td>
                 <div class="japanese-text">
                     ${word.reading}
-                    <span class="romaji">${wanakana.toRomaji(word.reading)}</span>
+                    <span class="romaji">${readingRomaji}</span>
                 </div>
             </td>
             <td>${word.meaning}</td>
@@ -219,7 +242,7 @@ function updateVocabularyTable() {
             </td>
         `;
         vocabList.appendChild(row);
-    });
+    }
 
     // Add event listeners
     document.querySelectorAll('.edit-btn').forEach(btn => {
@@ -262,12 +285,19 @@ function updateReviewSection() {
 }
 
 // Event handlers
-function handleAddWord(event) {
+async function handleAddWord(event) {
     event.preventDefault();
     
+    const japanese = document.getElementById('japanese').value;
+    const reading = document.getElementById('reading').value;
+    
+    // Get romaji for both Japanese and reading
+    const japaneseRomaji = await getRomaji(japanese);
+    const readingRomaji = await getRomaji(reading);
+    
     const word = vocabManager.addWord(
-        document.getElementById('japanese').value,
-        document.getElementById('reading').value,
+        japanese,
+        reading,
         document.getElementById('meaning').value,
         document.getElementById('category').value,
         document.getElementById('notes').value
@@ -338,7 +368,15 @@ function getMasteryColor(mastery) {
 }
 
 // Initialize
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    // Initialize Kuroshiro first
+    try {
+        await initializeKuroshiro();
+        console.log('Kuroshiro initialized successfully');
+    } catch (error) {
+        console.error('Error initializing Kuroshiro:', error);
+    }
+
     // Set up event listeners
     document.getElementById('add-word-form').addEventListener('submit', handleAddWord);
     
@@ -349,6 +387,30 @@ document.addEventListener('DOMContentLoaded', () => {
         vocabManager.vocabulary = filteredWords;
         updateVocabularyTable();
         vocabManager.loadData(); // Restore original data after search
+    });
+
+    // Add Japanese input field handlers
+    const japaneseInput = document.getElementById('japanese');
+    const readingInput = document.getElementById('reading');
+
+    japaneseInput.addEventListener('input', async () => {
+        const romajiPreview = document.createElement('div');
+        romajiPreview.className = 'romaji';
+        romajiPreview.textContent = 'Converting...';
+        japaneseInput.parentNode.appendChild(romajiPreview);
+        
+        const romaji = await getRomaji(japaneseInput.value);
+        romajiPreview.textContent = romaji;
+    });
+
+    readingInput.addEventListener('input', async () => {
+        const romajiPreview = document.createElement('div');
+        romajiPreview.className = 'romaji';
+        romajiPreview.textContent = 'Converting...';
+        readingInput.parentNode.appendChild(romajiPreview);
+        
+        const romaji = await getRomaji(readingInput.value);
+        romajiPreview.textContent = romaji;
     });
 
     // Add export/import handlers
