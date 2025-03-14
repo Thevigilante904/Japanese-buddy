@@ -225,11 +225,15 @@ function updateUI() {
     updateReviewSection();
 }
 
-async function updateVocabularyTable() {
+async function updateVocabularyTable(filteredWords = null) {
     const vocabList = document.getElementById('vocab-list');
+    if (!vocabList) return;
+
     vocabList.innerHTML = '';
 
-    for (const word of vocabManager.vocabulary) {
+    const wordsToDisplay = filteredWords || vocabManager.vocabulary;
+
+    for (const word of wordsToDisplay) {
         const row = document.createElement('tr');
         const japaneseRomaji = await getRomaji(word.japanese);
         const readingRomaji = await getRomaji(word.reading);
@@ -399,88 +403,119 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Set up event listeners
-    document.getElementById('add-word-form').addEventListener('submit', handleAddWord);
-    
+    const addWordForm = document.getElementById('add-word-form');
+    if (addWordForm) {
+        addWordForm.addEventListener('submit', handleAddWord);
+    }
+
     // Fix search functionality
-    document.getElementById('search').addEventListener('input', (e) => {
-        const query = e.target.value;
-        const filteredWords = vocabManager.searchWords(query);
-        vocabManager.vocabulary = filteredWords;
-        updateVocabularyTable();
-        vocabManager.loadData(); // Restore original data after search
-    });
+    const searchInput = document.getElementById('search');
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value;
+            const filteredWords = vocabManager.searchWords(query);
+            updateVocabularyTable(filteredWords);
+        });
+    }
 
     // Add Japanese input field handlers
     const japaneseInput = document.getElementById('japanese');
     const readingInput = document.getElementById('reading');
 
-    japaneseInput.addEventListener('input', async () => {
-        const romajiPreview = document.createElement('div');
-        romajiPreview.className = 'romaji';
-        romajiPreview.textContent = 'Converting...';
-        japaneseInput.parentNode.appendChild(romajiPreview);
-        
-        const romaji = await getRomaji(japaneseInput.value);
-        romajiPreview.textContent = romaji;
-    });
+    if (japaneseInput) {
+        japaneseInput.addEventListener('input', async () => {
+            const romajiPreview = document.createElement('div');
+            romajiPreview.className = 'romaji';
+            romajiPreview.textContent = 'Converting...';
+            japaneseInput.parentNode.appendChild(romajiPreview);
+            
+            const romaji = await getRomaji(japaneseInput.value);
+            romajiPreview.textContent = romaji;
+        });
+    }
 
-    readingInput.addEventListener('input', async () => {
-        const romajiPreview = document.createElement('div');
-        romajiPreview.className = 'romaji';
-        romajiPreview.textContent = 'Converting...';
-        readingInput.parentNode.appendChild(romajiPreview);
-        
-        const romaji = await getRomaji(readingInput.value);
-        romajiPreview.textContent = romaji;
-    });
+    if (readingInput) {
+        readingInput.addEventListener('input', async () => {
+            const romajiPreview = document.createElement('div');
+            romajiPreview.className = 'romaji';
+            romajiPreview.textContent = 'Converting...';
+            readingInput.parentNode.appendChild(romajiPreview);
+            
+            const romaji = await getRomaji(readingInput.value);
+            romajiPreview.textContent = romaji;
+        });
+    }
 
     // Add export/import handlers
-    document.getElementById('settings-export-btn').addEventListener('click', () => {
-        const data = vocabManager.exportData();
-        const blob = new Blob([data], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'japanese-vocabulary.json';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    });
+    const exportBtn = document.getElementById('settings-export-btn');
+    if (exportBtn) {
+        exportBtn.addEventListener('click', () => {
+            const data = vocabManager.exportData();
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'japanese-vocabulary.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+    }
 
-    document.getElementById('settings-import-btn').addEventListener('click', () => {
-        document.getElementById('import-modal').style.display = 'flex';
-    });
-
-    document.getElementById('import-confirm').addEventListener('click', () => {
-        const importData = document.getElementById('import-data').value;
-        try {
-            if (vocabManager.importData(importData)) {
-                alert('Data imported successfully!');
-                document.getElementById('import-modal').style.display = 'none';
-                document.getElementById('import-data').value = '';
-                updateUI();
-            } else {
-                alert('Invalid data format. Please check your import data.');
+    const importBtn = document.getElementById('settings-import-btn');
+    if (importBtn) {
+        importBtn.addEventListener('click', () => {
+            const importModal = document.getElementById('import-modal');
+            if (importModal) {
+                importModal.style.display = 'flex';
             }
-        } catch (e) {
-            alert('Error importing data. Please check the format and try again.');
-        }
-    });
+        });
+    }
+
+    const importConfirmBtn = document.getElementById('import-confirm');
+    if (importConfirmBtn) {
+        importConfirmBtn.addEventListener('click', () => {
+            const importData = document.getElementById('import-data');
+            if (importData) {
+                try {
+                    if (vocabManager.importData(importData.value)) {
+                        alert('Data imported successfully!');
+                        const importModal = document.getElementById('import-modal');
+                        if (importModal) {
+                            importModal.style.display = 'none';
+                        }
+                        importData.value = '';
+                        updateUI();
+                    } else {
+                        alert('Invalid data format. Please check your import data.');
+                    }
+                } catch (e) {
+                    alert('Error importing data. Please check the format and try again.');
+                }
+            }
+        });
+    }
 
     // Add reset progress handler
-    document.getElementById('reset-progress-btn').addEventListener('click', () => {
-        if (confirm('Are you sure you want to reset all progress? This will clear all mastery levels and review history, but keep your vocabulary words. This action cannot be undone.')) {
-            vocabManager.resetProgress();
-            updateUI();
-            alert('Progress has been reset successfully.');
-        }
-    });
+    const resetBtn = document.getElementById('reset-progress-btn');
+    if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+            if (confirm('Are you sure you want to reset all progress? This will clear all mastery levels and review history, but keep your vocabulary words. This action cannot be undone.')) {
+                vocabManager.resetProgress();
+                updateUI();
+                alert('Progress has been reset successfully.');
+            }
+        });
+    }
 
     // Add modal close handlers
     document.querySelectorAll('.modal .close').forEach(closeBtn => {
         closeBtn.addEventListener('click', () => {
-            closeBtn.closest('.modal').style.display = 'none';
+            const modal = closeBtn.closest('.modal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
         });
     });
 
@@ -494,8 +529,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // Update accuracy rate
-    document.getElementById('accuracy-rate').textContent = 
-        `${Math.round((vocabManager.stats.correctReviews / Math.max(1, vocabManager.stats.totalReviews)) * 100)}%`;
+    const accuracyRate = document.getElementById('accuracy-rate');
+    if (accuracyRate) {
+        accuracyRate.textContent = 
+            `${Math.round((vocabManager.stats.correctReviews / Math.max(1, vocabManager.stats.totalReviews)) * 100)}%`;
+    }
 
     // Initial UI update
     updateUI();
