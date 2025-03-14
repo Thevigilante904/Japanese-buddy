@@ -191,6 +191,27 @@ class VocabularyManager {
             return false;
         }
     }
+
+    resetProgress() {
+        // Keep the words but reset their progress
+        this.vocabulary = this.vocabulary.map(word => ({
+            ...word,
+            mastery: 0,
+            lastReviewed: null,
+            nextReview: new Date(),
+            reviewLevel: 0
+        }));
+
+        // Reset stats
+        this.stats = {
+            streak: 0,
+            lastStudy: null,
+            totalReviews: 0,
+            correctReviews: 0
+        };
+
+        this.saveData();
+    }
 }
 
 // Initialize vocabulary manager
@@ -444,6 +465,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         } catch (e) {
             alert('Error importing data. Please check the format and try again.');
+        }
+    });
+
+    // Add reset progress handler
+    document.getElementById('reset-progress-btn').addEventListener('click', () => {
+        if (confirm('Are you sure you want to reset all progress? This will clear all mastery levels and review history, but keep your vocabulary words. This action cannot be undone.')) {
+            vocabManager.resetProgress();
+            updateUI();
+            alert('Progress has been reset successfully.');
         }
     });
 
