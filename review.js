@@ -121,10 +121,22 @@ class ReviewUI {
         
         this.isAnswerRevealed = false;
         card.classList.remove('revealed');
-        card.querySelector('.japanese').textContent = word.japanese;
-        card.querySelector('.reading').textContent = word.reading;
-        card.querySelector('.meaning').textContent = word.meaning;
         
+        // Update Japanese text with romaji
+        const japaneseContainer = card.querySelector('.japanese-text');
+        japaneseContainer.innerHTML = `
+            <div class="japanese">${word.japanese}</div>
+            <span class="romaji">${wanakana.toRomaji(word.japanese)}</span>
+        `;
+
+        // Update reading with romaji
+        const readingContainer = card.querySelector('.reading-container');
+        readingContainer.innerHTML = `
+            <div class="reading">${word.reading}</div>
+            <span class="romaji">${wanakana.toRomaji(word.reading)}</span>
+        `;
+        
+        card.querySelector('.meaning').textContent = word.meaning;
         currentWordNum.textContent = this.session.currentIndex + 1;
         
         document.getElementById('reveal-btn').style.display = 'block';
