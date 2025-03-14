@@ -632,9 +632,50 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
+    // Add form submission handler
     const addWordForm = document.getElementById('add-word-form');
     if (addWordForm) {
-        addWordForm.addEventListener('submit', handleAddWord);
+        console.log('Setting up form submission handler');
+        addWordForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            console.log('Form submitted');
+            
+            const japanese = document.getElementById('japanese').value;
+            const reading = document.getElementById('reading').value;
+            const meaning = document.getElementById('meaning').value;
+            const category = 'General'; // Default category
+            const notes = document.getElementById('notes').value;
+
+            if (!japanese || !reading || !meaning) {
+                alert('Please fill in all required fields (Japanese, Reading, and Meaning)');
+                return;
+            }
+            
+            try {
+                const word = vocabManager.addWord(
+                    japanese,
+                    reading,
+                    meaning,
+                    category,
+                    notes
+                );
+
+                console.log('Added new word:', word);
+
+                // Close modal and reset form
+                const modal = document.getElementById('add-word-modal');
+                if (modal) {
+                    modal.style.display = 'none';
+                }
+                addWordForm.reset();
+                
+                // Update UI
+                updateUI();
+            } catch (error) {
+                console.error('Error adding word:', error);
+                alert('Error adding word. Please try again.');
+            }
+        });
     }
 
     // Fix search functionality
