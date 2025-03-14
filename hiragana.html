@@ -67,6 +67,7 @@
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
             position: relative;
             line-height: 1.2;
+            color: white;
         }
 
         header h1 .japanese-text {
@@ -256,27 +257,30 @@
         }
 
         .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
         }
 
         .stat-card {
             background-color: var(--paper);
-            padding: 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             text-align: center;
+            min-width: 140px;
         }
 
         .stat-card h3 {
             color: var(--secondary);
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.25rem;
+            font-size: 0.9rem;
+            opacity: 0.8;
         }
 
         .stat-card .value {
-            font-size: 2rem;
+            font-size: 1.5rem;
             font-weight: bold;
             color: var(--primary);
         }
@@ -297,6 +301,16 @@
 
             button {
                 width: 100%;
+            }
+
+            .stats {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .stat-card {
+                min-width: 120px;
+                flex: 0 1 auto;
             }
         }
     </style>
