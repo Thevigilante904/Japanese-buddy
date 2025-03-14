@@ -191,8 +191,18 @@ function updateVocabularyTable() {
     vocabManager.vocabulary.forEach(word => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>${word.japanese}</td>
-            <td>${word.reading}</td>
+            <td>
+                <div class="japanese-text">
+                    ${word.japanese}
+                    <span class="romaji">${wanakana.toRomaji(word.reading)}</span>
+                </div>
+            </td>
+            <td>
+                <div class="japanese-text">
+                    ${word.reading}
+                    <span class="romaji">${wanakana.toRomaji(word.reading)}</span>
+                </div>
+            </td>
             <td>${word.meaning}</td>
             <td><span class="tag">${word.category}</span></td>
             <td>
