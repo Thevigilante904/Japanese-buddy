@@ -435,7 +435,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // Add export/import handlers
-    document.getElementById('export-btn').addEventListener('click', () => {
+    document.getElementById('settings-export-btn').addEventListener('click', () => {
         const data = vocabManager.exportData();
         const blob = new Blob([data], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
@@ -448,7 +448,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         URL.revokeObjectURL(url);
     });
 
-    document.getElementById('import-btn').addEventListener('click', () => {
+    document.getElementById('settings-import-btn').addEventListener('click', () => {
         document.getElementById('import-modal').style.display = 'flex';
     });
 
