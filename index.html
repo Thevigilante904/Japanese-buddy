@@ -978,6 +978,7 @@
         .actions-dropdown {
             position: relative;
             display: inline-block;
+            width: 100%;
         }
 
         .actions-dropdown-btn {
@@ -989,6 +990,7 @@
             cursor: pointer;
             font-size: 0.75rem;
             min-width: 60px;
+            width: 100%;
         }
 
         .actions-dropdown-content {
@@ -1039,13 +1041,22 @@
         }
 
         @media (max-width: 767px) {
-            .actions-dropdown-content {
+            .vocab-card {
+                position: relative;
+            }
+
+            .vocab-card .actions-dropdown {
+                position: absolute;
+                top: 0.5rem;
+                right: 0.5rem;
+            }
+
+            .vocab-card .actions-dropdown-content {
                 right: 0;
-                top: 100%;
                 min-width: 100px;
             }
 
-            .actions-dropdown-content button {
+            .vocab-card .actions-dropdown-content button {
                 padding: 0.4rem 0.8rem;
                 font-size: 0.75rem;
             }
