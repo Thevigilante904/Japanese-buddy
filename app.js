@@ -266,6 +266,8 @@ function updateUI() {
 
 function updateVocabularyTable() {
     const vocabList = document.getElementById('vocab-list');
+    const mobileVocabList = document.createElement('div');
+    mobileVocabList.className = 'mobile-vocab-list';
     vocabList.innerHTML = '';
 
     if (vocabManager.vocabulary.length === 0) {
@@ -273,6 +275,7 @@ function updateVocabularyTable() {
         return;
     }
 
+    // Create desktop table rows
     vocabManager.vocabulary.forEach((word, index) => {
         const row = document.createElement('tr');
         row.innerHTML = `
@@ -286,7 +289,7 @@ function updateVocabularyTable() {
             <td>${word.meaning}</td>
             <td>
                 <div class="actions-dropdown">
-                    <button class="actions-dropdown-btn">Actions</button>
+                    <button class="actions-dropdown-btn">Menu</button>
                     <div class="actions-dropdown-content">
                         <button class="edit-btn" data-index="${index}">Edit</button>
                         <button class="delete-btn" data-index="${index}">Delete</button>
@@ -296,7 +299,32 @@ function updateVocabularyTable() {
             </td>
         `;
         vocabList.appendChild(row);
+
+        // Create mobile card
+        const card = document.createElement('div');
+        card.className = 'vocab-card';
+        card.innerHTML = `
+            <div class="japanese-text">
+                <span class="japanese">${word.japanese}</span>
+                <span class="romaji">${wanakana.toRomaji(word.japanese)}</span>
+            </div>
+            <div class="reading">${word.reading}</div>
+            <div class="meaning">${word.meaning}</div>
+            <div class="actions-dropdown">
+                <button class="actions-dropdown-btn">Menu</button>
+                <div class="actions-dropdown-content">
+                    <button class="edit-btn" data-index="${index}">Edit</button>
+                    <button class="delete-btn" data-index="${index}">Delete</button>
+                    <button class="review-btn" data-index="${index}">Review</button>
+                </div>
+            </div>
+        `;
+        mobileVocabList.appendChild(card);
     });
+
+    // Add mobile list to the container
+    const tableContainer = document.querySelector('.table-container');
+    tableContainer.appendChild(mobileVocabList);
 
     // Add event listeners for dropdowns
     document.querySelectorAll('.actions-dropdown').forEach(dropdown => {
