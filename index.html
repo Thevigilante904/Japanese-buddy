@@ -995,6 +995,7 @@
             display: none;
             position: absolute;
             right: 0;
+            top: 100%;
             background-color: var(--paper);
             min-width: 120px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -1038,45 +1039,9 @@
         }
 
         @media (max-width: 767px) {
-            .table-container {
-                margin: 1rem -1rem;
-                border-radius: 0;
-                padding: 0.5rem;
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-            }
-
-            table {
-                min-width: 100%;
-            }
-
-            th, td {
-                padding: 0.5rem;
-                font-size: 0.85rem;
-            }
-
-            /* Adjust column widths for mobile */
-            th:nth-child(1), td:nth-child(1) { width: 35%; } /* Japanese */
-            th:nth-child(2), td:nth-child(2) { width: 35%; } /* Reading */
-            th:nth-child(3), td:nth-child(3) { width: 25%; } /* Meaning */
-            th:nth-child(4), td:nth-child(4) { width: 5%; } /* Menu */
-
-            .japanese-text {
-                font-size: 0.9rem;
-            }
-
-            .romaji {
-                font-size: 0.7rem;
-            }
-
-            /* Mobile styles for actions dropdown */
-            .actions-dropdown-btn {
-                padding: 0.25rem 0.3rem;
-                font-size: 0.7rem;
-                min-width: 50px;
-            }
-
             .actions-dropdown-content {
+                right: 0;
+                top: 100%;
                 min-width: 100px;
             }
 
