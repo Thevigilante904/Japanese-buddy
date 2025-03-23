@@ -239,6 +239,11 @@
             margin: 2rem 0;
             padding: 1rem;
             -webkit-overflow-scrolling: touch;
+            position: relative;
+        }
+        
+        .desktop-view {
+            width: 100%;
         }
         
         table {
@@ -348,8 +353,8 @@
                 box-shadow: none;
             }
 
-            table {
-                display: none; /* Hide table on mobile */
+            .desktop-view {
+                display: none;
             }
 
             .mobile-vocab-list {
@@ -364,6 +369,7 @@
                 margin-bottom: 0.75rem;
                 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
                 border: 1px solid rgba(0, 0, 0, 0.1);
+                position: relative;
             }
 
             .vocab-card .japanese-text {
@@ -873,6 +879,7 @@
             margin: 2rem 0;
             padding: 1rem;
             -webkit-overflow-scrolling: touch;
+            position: relative;
         }
 
         table {
@@ -1151,19 +1158,24 @@
         </div>
 
         <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Japanese</th>
-                        <th>Reading</th>
-                        <th>Meaning</th>
-                        <th>Menu</th>
-                    </tr>
-                </thead>
-                <tbody id="vocab-list">
-                    <!-- Vocabulary items will be added here dynamically -->
-                </tbody>
-            </table>
+            <div class="desktop-view">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Japanese</th>
+                            <th>Reading</th>
+                            <th>Meaning</th>
+                            <th>Menu</th>
+                        </tr>
+                    </thead>
+                    <tbody id="vocab-list">
+                        <!-- Vocabulary items will be added here dynamically -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="mobile-vocab-list">
+                <!-- Mobile vocabulary cards will be added here dynamically -->
+            </div>
         </div>
 
         <div class="review-section">
