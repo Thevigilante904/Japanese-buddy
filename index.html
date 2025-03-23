@@ -344,6 +344,78 @@
                 margin: 1rem -0.5rem;
                 border-radius: 0;
                 padding: 0.5rem;
+                background: none;
+                box-shadow: none;
+            }
+
+            table {
+                display: none; /* Hide table on mobile */
+            }
+
+            .mobile-vocab-list {
+                display: block;
+                width: 100%;
+            }
+
+            .vocab-card {
+                background-color: var(--paper);
+                border-radius: 8px;
+                padding: 1rem;
+                margin-bottom: 0.75rem;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                border: 1px solid rgba(0, 0, 0, 0.1);
+            }
+
+            .vocab-card .japanese-text {
+                display: flex;
+                flex-direction: column;
+                gap: 0.2rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .vocab-card .japanese {
+                font-size: 1.2rem;
+                color: var(--dark);
+            }
+
+            .vocab-card .romaji {
+                font-size: 0.8rem;
+                color: var(--secondary);
+                opacity: 0.8;
+            }
+
+            .vocab-card .reading {
+                font-size: 0.9rem;
+                color: var(--secondary);
+                margin-bottom: 0.5rem;
+            }
+
+            .vocab-card .meaning {
+                font-size: 0.9rem;
+                color: var(--dark);
+                margin-bottom: 0.75rem;
+            }
+
+            .vocab-card .actions-dropdown {
+                position: absolute;
+                top: 0.5rem;
+                right: 0.5rem;
+            }
+
+            .vocab-card .actions-dropdown-btn {
+                padding: 0.25rem 0.3rem;
+                font-size: 0.7rem;
+                min-width: 40px;
+            }
+
+            .vocab-card .actions-dropdown-content {
+                right: 0;
+                min-width: 100px;
+            }
+
+            .vocab-card .actions-dropdown-content button {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.75rem;
             }
 
             .actions {
@@ -357,6 +429,12 @@
 
             #search {
                 width: 100%;
+            }
+        }
+        
+        @media (min-width: 768px) {
+            .mobile-vocab-list {
+                display: none;
             }
         }
         
