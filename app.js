@@ -1,31 +1,11 @@
 // Constants
 const REVIEW_INTERVALS = [1, 3, 7, 14, 30, 90, 180]; // Spaced repetition intervals in days
 
-// Initialize Kuroshiro
-let kuroshiro = null;
-
 // Add these variables at the top of the file, after the constants
 let currentReviewWord = null;
 let isReviewInProgress = false;
 let currentReviewWords = [];
 let currentReviewIndex = 0;
-
-async function initializeKuroshiro() {
-    kuroshiro = new Kuroshiro();
-    await kuroshiro.init(new KuroshiroAnalyzer());
-}
-
-async function getRomaji(text) {
-    if (!kuroshiro) {
-        return 'Loading...';
-    }
-    try {
-        return await kuroshiro.convert(text, { to: 'romaji', mode: 'spaced' });
-    } catch (error) {
-        console.error('Error converting to romaji:', error);
-        return text;
-    }
-}
 
 // Data structures
 class VocabularyItem {
@@ -266,9 +246,16 @@ function updateUI() {
 
 function updateVocabularyTable() {
     const vocabList = document.getElementById('vocab-list');
-    const mobileVocabList = document.createElement('div');
-    mobileVocabList.className = 'mobile-vocab-list';
+    const tableContainer = document.querySelector('.table-container');
+    
+    // Clear existing content
     vocabList.innerHTML = '';
+    
+    // Remove existing mobile list if it exists
+    const existingMobileList = tableContainer.querySelector('.mobile-vocab-list');
+    if (existingMobileList) {
+        existingMobileList.remove();
+    }
 
     if (vocabManager.vocabulary.length === 0) {
         vocabList.innerHTML = '<tr><td colspan="4" style="text-align: center;">No vocabulary words yet. Add your first word!</td></tr>';
@@ -299,8 +286,13 @@ function updateVocabularyTable() {
             </td>
         `;
         vocabList.appendChild(row);
+    });
 
-        // Create mobile card
+    // Create mobile list
+    const mobileVocabList = document.createElement('div');
+    mobileVocabList.className = 'mobile-vocab-list';
+    
+    vocabManager.vocabulary.forEach((word, index) => {
         const card = document.createElement('div');
         card.className = 'vocab-card';
         card.innerHTML = `
@@ -323,7 +315,6 @@ function updateVocabularyTable() {
     });
 
     // Add mobile list to the container
-    const tableContainer = document.querySelector('.table-container');
     tableContainer.appendChild(mobileVocabList);
 
     // Add event listeners for dropdowns
@@ -494,10 +485,6 @@ async function handleAddWord(event) {
     }
     
     try {
-        // Get romaji for both Japanese and reading
-        const japaneseRomaji = await getRomaji(japanese);
-        const readingRomaji = await getRomaji(reading);
-        
         const word = vocabManager.addWord(
             japanese,
             reading,
@@ -656,15 +643,7 @@ function addClickAndTouchHandler(element, handler) {
 }
 
 // Initialize
-document.addEventListener('DOMContentLoaded', async () => {
-    // Initialize Kuroshiro first
-    try {
-        await initializeKuroshiro();
-        console.log('Kuroshiro initialized successfully');
-    } catch (error) {
-        console.error('Error initializing Kuroshiro:', error);
-    }
-
+document.addEventListener('DOMContentLoaded', () => {
     // Set up event listeners
     const addWordBtn = document.getElementById('add-word-btn');
     if (addWordBtn) {
