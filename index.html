@@ -1182,8 +1182,10 @@
 
         .vocab-card .actions-dropdown {
             position: absolute;
-            top: 1rem;
+            top: 50%;
             right: 1rem;
+            transform: translateY(-50%);
+            z-index: 10;
         }
 
         .vocab-card .actions-dropdown-btn {
@@ -1280,8 +1282,9 @@
             }
 
             .vocab-card .actions-dropdown {
-                top: 0.75rem;
-                right: 0.75rem;
+                top: 1rem;
+                right: 1rem;
+                transform: none;
             }
 
             .vocab-card .actions-dropdown-btn {
