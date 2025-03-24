@@ -246,52 +246,16 @@ function updateUI() {
 
 function updateVocabularyTable() {
     const vocabList = document.getElementById('vocab-list');
-    const tableContainer = document.querySelector('.table-container');
     
     // Clear existing content
     vocabList.innerHTML = '';
-    
-    // Remove existing mobile list if it exists
-    const existingMobileList = tableContainer.querySelector('.mobile-vocab-list');
-    if (existingMobileList) {
-        existingMobileList.remove();
-    }
 
     if (vocabManager.vocabulary.length === 0) {
-        vocabList.innerHTML = '<tr><td colspan="4" style="text-align: center;">No vocabulary words yet. Add your first word!</td></tr>';
+        vocabList.innerHTML = '<div class="empty-state">No vocabulary words yet. Add your first word!</div>';
         return;
     }
 
-    // Create desktop table rows
-    vocabManager.vocabulary.forEach((word, index) => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>
-                <div class="japanese-text">
-                    <span class="japanese">${word.japanese}</span>
-                    <span class="romaji">${wanakana.toRomaji(word.japanese)}</span>
-                </div>
-            </td>
-            <td>${word.reading}</td>
-            <td>${word.meaning}</td>
-            <td>
-                <div class="actions-dropdown">
-                    <button class="actions-dropdown-btn">Menu</button>
-                    <div class="actions-dropdown-content">
-                        <button class="edit-btn" data-index="${index}">Edit</button>
-                        <button class="delete-btn" data-index="${index}">Delete</button>
-                        <button class="review-btn" data-index="${index}">Review</button>
-                    </div>
-                </div>
-            </td>
-        `;
-        vocabList.appendChild(row);
-    });
-
-    // Create mobile list
-    const mobileVocabList = document.createElement('div');
-    mobileVocabList.className = 'mobile-vocab-list';
-    
+    // Create vocabulary cards
     vocabManager.vocabulary.forEach((word, index) => {
         const card = document.createElement('div');
         card.className = 'vocab-card';
@@ -311,11 +275,8 @@ function updateVocabularyTable() {
                 </div>
             </div>
         `;
-        mobileVocabList.appendChild(card);
+        vocabList.appendChild(card);
     });
-
-    // Add mobile list to the container
-    tableContainer.appendChild(mobileVocabList);
 
     // Add event listeners for dropdowns
     document.querySelectorAll('.actions-dropdown').forEach(dropdown => {
@@ -332,8 +293,10 @@ function updateVocabularyTable() {
         });
 
         // Close dropdown when clicking outside
-        document.addEventListener('click', () => {
-            content.classList.remove('show');
+        document.addEventListener('click', (e) => {
+            if (!dropdown.contains(e.target)) {
+                content.classList.remove('show');
+            }
         });
 
         // Prevent dropdown from closing when clicking inside
