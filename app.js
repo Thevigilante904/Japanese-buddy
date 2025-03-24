@@ -269,9 +269,9 @@ function updateVocabularyTable() {
             <div class="actions-dropdown">
                 <button class="actions-dropdown-btn">Menu</button>
                 <div class="actions-dropdown-content">
-                    <button class="edit-btn" data-index="${index}">Edit</button>
-                    <button class="delete-btn" data-index="${index}">Delete</button>
-                    <button class="review-btn" data-index="${index}">Review</button>
+                    <button class="edit-btn" data-id="${word.id}">Edit</button>
+                    <button class="delete-btn" data-id="${word.id}">Delete</button>
+                    <button class="review-btn" data-id="${word.id}">Review</button>
                 </div>
             </div>
         `;
@@ -291,40 +291,40 @@ function updateVocabularyTable() {
             });
             content.classList.toggle('show');
         });
-
-        // Close dropdown when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!dropdown.contains(e.target)) {
-                content.classList.remove('show');
-            }
-        });
-
-        // Prevent dropdown from closing when clicking inside
-        content.addEventListener('click', (e) => {
-            e.stopPropagation();
-        });
     });
 
     // Add event listeners for action buttons
     document.querySelectorAll('.edit-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-            const index = parseInt(btn.dataset.index);
-            handleEditWord(index);
+            const id = btn.dataset.id;
+            const word = vocabManager.vocabulary.find(w => w.id === parseInt(id));
+            if (word) handleEditWord(word);
         });
     });
 
     document.querySelectorAll('.delete-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-            const index = parseInt(btn.dataset.index);
-            handleDeleteWord(index);
+            const id = btn.dataset.id;
+            const word = vocabManager.vocabulary.find(w => w.id === parseInt(id));
+            if (word) handleDeleteWord(word);
         });
     });
 
     document.querySelectorAll('.review-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-            const index = parseInt(btn.dataset.index);
-            startReview([vocabManager.vocabulary[index]]);
+            const id = btn.dataset.id;
+            const word = vocabManager.vocabulary.find(w => w.id === parseInt(id));
+            if (word) startReview([word]);
         });
+    });
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.actions-dropdown')) {
+            document.querySelectorAll('.actions-dropdown-content.show').forEach(dropdown => {
+                dropdown.classList.remove('show');
+            });
+        }
     });
 }
 
@@ -473,17 +473,14 @@ async function handleAddWord(event) {
     }
 }
 
-function handleEditWord(event) {
-    const id = parseInt(event.target.dataset.index);
-    const word = vocabManager.vocabulary[id];
+function handleEditWord(word) {
     if (!word) return;
 
     // Populate edit form
     document.getElementById('japanese').value = word.japanese;
     document.getElementById('reading').value = word.reading;
     document.getElementById('meaning').value = word.meaning;
-    document.getElementById('category').value = word.category;
-    document.getElementById('notes').value = word.notes;
+    document.getElementById('notes').value = word.notes || '';
 
     // Show modal
     const modal = document.getElementById('add-word-modal');
@@ -497,7 +494,6 @@ function handleEditWord(event) {
             japanese: document.getElementById('japanese').value,
             reading: document.getElementById('reading').value,
             meaning: document.getElementById('meaning').value,
-            category: document.getElementById('category').value,
             notes: document.getElementById('notes').value
         });
         modal.style.display = 'none';
@@ -507,17 +503,15 @@ function handleEditWord(event) {
     };
 }
 
-function handleDeleteWord(event) {
-    if (confirm('Are you sure you want to delete this word?')) {
-        const id = parseInt(event.target.dataset.index);
-        vocabManager.deleteWord(vocabManager.vocabulary[id].id);
-        updateUI();
-    }
+function handleDeleteWord(word) {
+    if (!word || !confirm('Are you sure you want to delete this word?')) return;
+    vocabManager.deleteWord(word.id);
+    updateUI();
 }
 
 function handleReviewWord(event) {
-    const id = parseInt(event.target.dataset.index);
-    const word = vocabManager.vocabulary[id];
+    const id = parseInt(event.target.dataset.id);
+    const word = vocabManager.vocabulary.find(w => w.id === id);
     if (!word) return;
 
     const isCorrect = confirm(`Do you know the meaning of ${word.japanese} (${word.reading})?`);
