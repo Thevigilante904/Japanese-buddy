@@ -287,7 +287,7 @@ function updateVocabularyTable() {
         card.innerHTML = `
             <div class="card-header">
                 <div class="japanese-text">
-                    <span class="japanese" style="display: none;">${word.japanese}</span>
+                    <span class="japanese">${word.japanese}</span>
                     <span class="reading">${word.reading}</span>
                     <span class="romaji"></span>
                 </div>
@@ -567,7 +567,7 @@ async function toRomaji(text) {
         return romaji;
     } catch (error) {
         console.error('Error converting to romaji:', error);
-        return 'Error loading romaji';
+        return '';
     }
 }
 
