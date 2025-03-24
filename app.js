@@ -260,35 +260,37 @@ function updateVocabularyTable() {
         const card = document.createElement('div');
         card.className = 'vocab-card';
         card.innerHTML = `
-            <div class="content-wrapper">
+            <div class="card-header">
                 <div class="japanese-text">
                     <span class="japanese">${word.japanese}</span>
                     <span class="romaji">${wanakana.toRomaji(word.japanese)}</span>
                 </div>
+                <div class="card-menu">
+                    <button class="menu-btn">⋮</button>
+                    <div class="menu-content">
+                        <button class="edit-btn" data-id="${word.id}">Edit</button>
+                        <button class="delete-btn" data-id="${word.id}">Delete</button>
+                        <button class="review-btn" data-id="${word.id}">Review</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
                 <div class="reading">${word.reading}</div>
                 <div class="meaning">${word.meaning}</div>
-            </div>
-            <div class="actions-dropdown">
-                <button class="actions-dropdown-btn">Menu</button>
-                <div class="actions-dropdown-content">
-                    <button class="edit-btn" data-id="${word.id}">Edit</button>
-                    <button class="delete-btn" data-id="${word.id}">Delete</button>
-                    <button class="review-btn" data-id="${word.id}">Review</button>
-                </div>
             </div>
         `;
         vocabList.appendChild(card);
     });
 
     // Add event listeners for dropdowns
-    document.querySelectorAll('.actions-dropdown').forEach(dropdown => {
-        const btn = dropdown.querySelector('.actions-dropdown-btn');
-        const content = dropdown.querySelector('.actions-dropdown-content');
+    document.querySelectorAll('.card-menu').forEach(menu => {
+        const btn = menu.querySelector('.menu-btn');
+        const content = menu.querySelector('.menu-content');
 
         btn.addEventListener('click', (e) => {
             e.stopPropagation();
             // Close all other dropdowns
-            document.querySelectorAll('.actions-dropdown-content.show').forEach(d => {
+            document.querySelectorAll('.menu-content.show').forEach(d => {
                 if (d !== content) d.classList.remove('show');
             });
             content.classList.toggle('show');
@@ -322,8 +324,8 @@ function updateVocabularyTable() {
 
     // Close dropdowns when clicking outside
     document.addEventListener('click', (e) => {
-        if (!e.target.closest('.actions-dropdown')) {
-            document.querySelectorAll('.actions-dropdown-content.show').forEach(dropdown => {
+        if (!e.target.closest('.card-menu')) {
+            document.querySelectorAll('.menu-content.show').forEach(dropdown => {
                 dropdown.classList.remove('show');
             });
         }
