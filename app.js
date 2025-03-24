@@ -1,5 +1,7 @@
 // Constants
 const REVIEW_INTERVALS = [1, 3, 7, 14, 30, 90, 180]; // Spaced repetition intervals in days
+const EASE_FACTOR = 2.5; // Base ease factor for the SuperMemo 2 algorithm
+const MIN_EASE_FACTOR = 1.3; // Minimum ease factor to prevent too difficult words
 
 // Add these variables at the top of the file, after the constants
 let currentReviewWord = null;
@@ -21,6 +23,10 @@ class VocabularyItem {
         this.lastReviewed = null;
         this.nextReview = new Date();
         this.reviewLevel = 0;
+        this.easeFactor = EASE_FACTOR; // New field for SuperMemo 2 algorithm
+        this.consecutiveCorrect = 0; // Track consecutive correct reviews
+        this.totalReviews = 0; // Track total number of reviews
+        this.lastInterval = 0; // Track the last interval used
     }
 }
 
@@ -65,18 +71,37 @@ class VocabularyManager {
         }
 
         this.stats.totalReviews++;
+        word.totalReviews++;
+
         if (isCorrect) {
             this.stats.correctReviews++;
+            word.consecutiveCorrect++;
             word.mastery = Math.min(100, word.mastery + 10);
-            word.reviewLevel = Math.min(word.reviewLevel + 1, REVIEW_INTERVALS.length - 1);
+            
+            // SuperMemo 2 algorithm for correct answers
+            if (word.consecutiveCorrect === 1) {
+                word.lastInterval = 1;
+            } else if (word.consecutiveCorrect === 2) {
+                word.lastInterval = 6;
+            } else {
+                word.lastInterval = Math.round(word.lastInterval * word.easeFactor);
+            }
+            
+            // Adjust ease factor based on performance
+            word.easeFactor = Math.max(MIN_EASE_FACTOR, 
+                word.easeFactor + (0.1 - (5 - word.consecutiveCorrect) * (0.08 + (5 - word.consecutiveCorrect) * 0.02)));
         } else {
+            word.consecutiveCorrect = 0;
             word.mastery = Math.max(0, word.mastery - 5);
-            word.reviewLevel = Math.max(0, word.reviewLevel - 1);
+            
+            // Reset interval and adjust ease factor for incorrect answers
+            word.lastInterval = 1;
+            word.easeFactor = Math.max(MIN_EASE_FACTOR, word.easeFactor - 0.2);
         }
 
         word.lastReviewed = new Date();
         word.nextReview = new Date();
-        word.nextReview.setDate(word.nextReview.getDate() + REVIEW_INTERVALS[word.reviewLevel]);
+        word.nextReview.setDate(word.nextReview.getDate() + word.lastInterval);
         
         console.log('Updated word:', word);
         this.updateStreak();
@@ -264,7 +289,7 @@ function updateVocabularyTable() {
                 <div class="japanese-text">
                     <span class="japanese">${word.japanese}</span>
                     <span class="reading">${word.reading}</span>
-                    <span class="romaji">${wanakana.toRomaji(word.japanese)}</span>
+                    <span class="romaji"></span>
                 </div>
                 <div class="card-menu">
                     <button class="menu-btn">⋮</button>
@@ -280,6 +305,10 @@ function updateVocabularyTable() {
             </div>
         `;
         vocabList.appendChild(card);
+
+        // Update romaji for this card
+        const japaneseElement = card.querySelector('.japanese-text');
+        updateRomaji(japaneseElement);
     });
 
     // Add event listeners for dropdowns
@@ -532,11 +561,6 @@ function getMasteryColor(mastery) {
 
 // Function to convert Japanese text to romaji using WanaKana
 async function toRomaji(text) {
-    // Show loading state
-    const loadingText = document.createElement('span');
-    loadingText.className = 'loading-romaji';
-    loadingText.textContent = 'Loading romaji...';
-    
     try {
         // Convert using WanaKana
         const romaji = wanakana.toRomaji(text);
@@ -559,14 +583,10 @@ async function updateRomaji(japaneseElement) {
         japaneseElement.appendChild(romajiElement);
     }
     
-    // Show loading state
-    romajiElement.textContent = 'Loading romaji...';
-    romajiElement.className = 'loading-romaji';
-    
     try {
         const romaji = await toRomaji(japaneseText);
         romajiElement.textContent = romaji;
-        romajiElement.className = 'romaji'; // Switch back to normal style
+        romajiElement.className = 'romaji';
     } catch (error) {
         romajiElement.textContent = 'Error loading romaji';
         romajiElement.className = 'romaji error';
