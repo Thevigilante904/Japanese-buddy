@@ -260,12 +260,14 @@ function updateVocabularyTable() {
         const card = document.createElement('div');
         card.className = 'vocab-card';
         card.innerHTML = `
-            <div class="japanese-text">
-                <span class="japanese">${word.japanese}</span>
-                <span class="romaji">${wanakana.toRomaji(word.japanese)}</span>
+            <div class="content-wrapper">
+                <div class="japanese-text">
+                    <span class="japanese">${word.japanese}</span>
+                    <span class="romaji">${wanakana.toRomaji(word.japanese)}</span>
+                </div>
+                <div class="reading">${word.reading}</div>
+                <div class="meaning">${word.meaning}</div>
             </div>
-            <div class="reading">${word.reading}</div>
-            <div class="meaning">${word.meaning}</div>
             <div class="actions-dropdown">
                 <button class="actions-dropdown-btn">Menu</button>
                 <div class="actions-dropdown-content">
