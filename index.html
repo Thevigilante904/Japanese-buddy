@@ -1144,15 +1144,16 @@
             gap: 0.75rem;
         }
 
-        .vocab-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        .vocab-card .content-wrapper {
+            padding-right: 4rem; /* Make space for the dropdown */
+            position: relative;
         }
 
         .vocab-card .japanese-text {
             display: flex;
             flex-direction: column;
             gap: 0.25rem;
+            margin-bottom: 0.5rem;
         }
 
         .vocab-card .japanese {
@@ -1177,14 +1178,12 @@
             font-size: 1rem;
             color: var(--dark);
             line-height: 1.5;
-            flex-grow: 1;
         }
 
         .vocab-card .actions-dropdown {
             position: absolute;
-            top: 50%;
-            right: 1rem;
-            transform: translateY(-50%);
+            top: 0;
+            right: 0;
             z-index: 10;
         }
 
@@ -1198,10 +1197,6 @@
             font-size: 0.8rem;
             min-width: 60px;
             transition: background-color 0.2s ease;
-        }
-
-        .vocab-card .actions-dropdown-btn:hover {
-            background-color: #2c3e50;
         }
 
         .vocab-card .actions-dropdown-content {
@@ -1218,87 +1213,14 @@
             overflow: hidden;
         }
 
-        .vocab-card .actions-dropdown-content.show {
-            display: block;
-            animation: fadeIn 0.2s ease;
-        }
-
-        .vocab-card .actions-dropdown-content button {
-            display: block;
-            width: 100%;
-            padding: 0.6rem 1rem;
-            border: none;
-            background: none;
-            text-align: left;
-            font-size: 0.9rem;
-            color: var(--dark);
-            cursor: pointer;
-            transition: background-color 0.2s;
-            white-space: nowrap;
-        }
-
-        .vocab-card .actions-dropdown-content button:hover {
-            background-color: rgba(0, 0, 0, 0.05);
-        }
-
-        .vocab-card .actions-dropdown-content button.edit-btn {
-            color: var(--secondary);
-        }
-
-        .vocab-card .actions-dropdown-content button.delete-btn {
-            color: var(--primary);
-        }
-
-        .vocab-card .actions-dropdown-content button.review-btn {
-            color: var(--success);
-        }
-
         @media (max-width: 767px) {
-            .vocabulary-grid {
-                grid-template-columns: 1fr;
-                gap: 0.75rem;
-                margin: 1rem 0;
-                padding: 0.5rem;
-            }
-
-            .vocab-card {
-                padding: 1rem;
-            }
-
-            .vocab-card .japanese {
-                font-size: 1.3rem;
-            }
-
-            .vocab-card .romaji {
-                font-size: 0.8rem;
-            }
-
-            .vocab-card .reading {
-                font-size: 0.9rem;
-            }
-
-            .vocab-card .meaning {
-                font-size: 0.9rem;
+            .vocab-card .content-wrapper {
+                padding-right: 3rem; /* Slightly less padding on mobile */
             }
 
             .vocab-card .actions-dropdown {
-                top: 1rem;
-                right: 1rem;
-                transform: none;
-            }
-
-            .vocab-card .actions-dropdown-btn {
-                padding: 0.3rem 0.5rem;
-                font-size: 0.75rem;
-            }
-
-            .vocab-card .actions-dropdown-content {
-                min-width: 100px;
-            }
-
-            .vocab-card .actions-dropdown-content button {
-                padding: 0.5rem 0.8rem;
-                font-size: 0.8rem;
+                top: 0.5rem;
+                right: 0.5rem;
             }
         }
 
