@@ -263,6 +263,7 @@ function updateVocabularyTable() {
             <div class="card-header">
                 <div class="japanese-text">
                     <span class="japanese">${word.japanese}</span>
+                    <span class="reading">${word.reading}</span>
                     <span class="romaji">${wanakana.toRomaji(word.japanese)}</span>
                 </div>
                 <div class="card-menu">
@@ -275,7 +276,6 @@ function updateVocabularyTable() {
                 </div>
             </div>
             <div class="card-body">
-                <div class="reading">${word.reading}</div>
                 <div class="meaning">${word.meaning}</div>
             </div>
         `;
