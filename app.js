@@ -563,7 +563,12 @@ function getMasteryColor(mastery) {
 async function toRomaji(text) {
     try {
         // Convert using WanaKana
-        const romaji = wanakana.toRomaji(text);
+        const romaji = wanakana.toRomaji(text, {
+            useObsoleteKana: false,
+            passRomaji: true,
+            upcaseKatakana: false,
+            IMEMode: false
+        });
         return romaji;
     } catch (error) {
         console.error('Error converting to romaji:', error);
@@ -581,6 +586,7 @@ async function updateRomaji(japaneseElement) {
         romajiElement.textContent = romaji;
         romajiElement.className = 'romaji';
     } catch (error) {
+        console.error('Error updating romaji:', error);
         romajiElement.textContent = '';
         romajiElement.className = 'romaji error';
     }
@@ -591,13 +597,23 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize WanaKana on the Japanese input field
     const japaneseInput = document.getElementById('japanese');
     if (japaneseInput) {
-        wanakana.bind(japaneseInput);
+        wanakana.bind(japaneseInput, {
+            useObsoleteKana: false,
+            passRomaji: true,
+            upcaseKatakana: false,
+            IMEMode: false
+        });
     }
 
     // Initialize WanaKana on the reading input field
     const readingInput = document.getElementById('reading');
     if (readingInput) {
-        wanakana.bind(readingInput);
+        wanakana.bind(readingInput, {
+            useObsoleteKana: false,
+            passRomaji: true,
+            upcaseKatakana: false,
+            IMEMode: false
+        });
     }
 
     // Update romaji for all Japanese text elements
