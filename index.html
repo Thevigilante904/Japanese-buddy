@@ -1139,21 +1139,98 @@
             border: 1px solid rgba(0, 0, 0, 0.1);
             position: relative;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
         }
 
-        .vocab-card .content-wrapper {
-            padding-right: 4rem; /* Make space for the dropdown */
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .card-menu {
             position: relative;
+        }
+
+        .menu-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--secondary);
+            cursor: pointer;
+            padding: 0.25rem;
+            min-width: auto;
+            width: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-btn:hover {
+            color: var(--primary);
+            background: none;
+            transform: none;
+        }
+
+        .menu-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background-color: var(--paper);
+            min-width: 120px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 6px;
+            z-index: 1000;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .menu-content.show {
+            display: block;
+        }
+
+        .menu-content button {
+            display: block;
+            width: 100%;
+            padding: 0.5rem 1rem;
+            border: none;
+            background: none;
+            text-align: left;
+            font-size: 0.8rem;
+            color: var(--dark);
+            cursor: pointer;
+            transition: background-color 0.2s;
+            white-space: nowrap;
+            min-width: auto;
+        }
+
+        .menu-content button:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .menu-content .edit-btn {
+            color: var(--secondary);
+        }
+
+        .menu-content .delete-btn {
+            color: var(--primary);
+        }
+
+        .menu-content .review-btn {
+            color: var(--success);
+        }
+
+        .card-body {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
         }
 
         .vocab-card .japanese-text {
             display: flex;
             flex-direction: column;
             gap: 0.25rem;
-            margin-bottom: 0.5rem;
         }
 
         .vocab-card .japanese {
@@ -1171,7 +1248,6 @@
         .vocab-card .reading {
             font-size: 1rem;
             color: var(--secondary);
-            margin-bottom: 0.5rem;
         }
 
         .vocab-card .meaning {
@@ -1180,55 +1256,20 @@
             line-height: 1.5;
         }
 
-        .vocab-card .actions-dropdown {
-            position: absolute;
-            top: 50%;
-            right: 1rem;
-            transform: translateY(-50%);
-            z-index: 10;
-        }
-
-        .vocab-card .actions-dropdown-btn {
-            background-color: var(--secondary);
-            color: white;
-            padding: 0.4rem 0.6rem;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            min-width: 60px;
-            transition: background-color 0.2s ease;
-        }
-
-        .vocab-card .actions-dropdown-content {
-            display: none;
-            position: absolute;
-            right: 0;
-            top: 100%;
-            background-color: var(--paper);
-            min-width: 120px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            border-radius: 6px;
-            z-index: 1000;
-            margin-top: 0.5rem;
-            overflow: hidden;
-        }
-
         @media (max-width: 767px) {
-            .vocab-card .content-wrapper {
-                padding-right: 3rem; /* Slightly less padding on mobile */
+            .vocab-card {
+                padding: 1rem;
             }
 
-            .vocab-card .actions-dropdown {
-                top: 1rem;
-                right: 1rem;
-                transform: none;
+            .menu-content {
+                right: -0.5rem;
+                min-width: 100px;
             }
-        }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+            .menu-content button {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.75rem;
+            }
         }
     </style>
 </head>
