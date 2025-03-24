@@ -1126,7 +1126,7 @@
         .vocabulary-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1rem;
+            gap: 1.5rem;
             margin: 2rem 0;
             padding: 1rem;
         }
@@ -1140,24 +1140,99 @@
             position: relative;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
             display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .vocab-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
 
         .card-header {
-            flex: 1;
-            margin-right: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
         }
 
-        .card-body {
-            min-width: 150px;
-            text-align: right;
-        }
-
-        .vocab-card .japanese-text {
+        .japanese-text {
             display: flex;
             flex-direction: column;
             gap: 0.25rem;
+            flex: 1;
+        }
+
+        .card-menu {
+            position: relative;
+        }
+
+        .menu-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--secondary);
+            cursor: pointer;
+            padding: 0.25rem;
+            min-width: auto;
+            width: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background-color: var(--paper);
+            min-width: 120px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 6px;
+            z-index: 1000;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .menu-content.show {
+            display: block;
+        }
+
+        .menu-content button {
+            display: block;
+            width: 100%;
+            padding: 0.5rem 1rem;
+            border: none;
+            background: none;
+            text-align: left;
+            font-size: 0.8rem;
+            color: var(--dark);
+            cursor: pointer;
+            transition: background-color 0.2s;
+            white-space: nowrap;
+            min-width: auto;
+        }
+
+        .menu-content button:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .menu-content .edit-btn {
+            color: var(--secondary);
+        }
+
+        .menu-content .delete-btn {
+            color: var(--primary);
+        }
+
+        .menu-content .review-btn {
+            color: var(--success);
+        }
+
+        .card-body {
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            padding-top: 1rem;
         }
 
         .vocab-card .japanese {
@@ -1184,19 +1259,18 @@
         }
 
         @media (max-width: 767px) {
+            .vocabulary-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                padding: 0.5rem;
+            }
+
             .vocab-card {
-                flex-direction: column;
                 padding: 1rem;
             }
 
             .card-header {
-                margin-right: 0;
-                margin-bottom: 1rem;
-            }
-
-            .card-body {
-                min-width: 100%;
-                text-align: left;
+                gap: 0.5rem;
             }
 
             .vocab-card .japanese {
@@ -1213,6 +1287,16 @@
 
             .vocab-card .meaning {
                 font-size: 1rem;
+            }
+
+            .menu-content {
+                right: -0.5rem;
+                min-width: 100px;
+            }
+
+            .menu-content button {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.75rem;
             }
         }
     </style>
