@@ -1292,6 +1292,138 @@
                 font-size: 0.75rem;
             }
         }
+
+        .review-section {
+            text-align: center;
+            margin: 2rem 0;
+            padding: 2rem;
+            background-color: var(--paper);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .review-section h2 {
+            margin-bottom: 1rem;
+        }
+
+        #review-count {
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        #start-review-btn {
+            margin: 2rem auto;
+            display: block;
+            min-width: 200px;
+        }
+
+        #review-card {
+            display: none;
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        #review-card.show {
+            display: block;
+        }
+
+        .review-card .japanese-text {
+            margin-bottom: 1.5rem;
+        }
+
+        .review-card .japanese {
+            font-size: 2.5rem;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .review-card .reading {
+            font-size: 1.5rem;
+            color: var(--secondary);
+        }
+
+        .meaning-container {
+            margin: 2rem 0;
+            min-height: 60px;
+        }
+
+        .meaning {
+            font-size: 1.5rem;
+            color: var(--success);
+            margin-bottom: 1rem;
+        }
+
+        .reveal-btn {
+            background-color: var(--accent);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .reveal-btn:hover {
+            background-color: #d4a41c;
+            transform: translateY(-1px);
+        }
+
+        .review-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .review-buttons button {
+            min-width: 150px;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+        }
+
+        .review-buttons .incorrect-btn {
+            background-color: var(--primary);
+        }
+
+        .review-buttons .correct-btn {
+            background-color: var(--success);
+        }
+
+        @media (max-width: 767px) {
+            .review-section {
+                padding: 1rem;
+                margin: 1rem 0;
+            }
+
+            #review-card {
+                padding: 1.5rem;
+                margin: 1rem auto;
+            }
+
+            .review-card .japanese {
+                font-size: 2rem;
+            }
+
+            .review-card .reading {
+                font-size: 1.2rem;
+            }
+
+            .meaning {
+                font-size: 1.2rem;
+            }
+
+            .review-buttons {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .review-buttons button {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1335,9 +1467,13 @@
         <div class="review-section">
             <h2>Review Session</h2>
             <p>Words to review: <span id="review-count">0</span></p>
-            <div id="review-card" class="card">
-                <div class="japanese-text"></div>
-                <div class="reading"></div>
+            <button id="start-review-btn" class="primary">Start Review</button>
+            
+            <div id="review-card" class="review-card">
+                <div class="japanese-text">
+                    <div class="japanese"></div>
+                    <div class="reading"></div>
+                </div>
                 <div class="meaning-container">
                     <div class="meaning hidden"></div>
                     <button id="reveal-answer-btn" class="reveal-btn">Reveal Answer</button>
@@ -1347,7 +1483,6 @@
                     <button class="correct-btn">Correct</button>
                 </div>
             </div>
-            <button id="start-review-btn" class="primary">Start Review</button>
         </div>
         
         <div class="stats">
