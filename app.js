@@ -289,7 +289,6 @@ function updateVocabularyTable() {
                 <div class="japanese-text">
                     <span class="japanese">${word.japanese}</span>
                     <span class="reading">${word.reading}</span>
-                    <span class="romaji"></span>
                 </div>
                 <div class="card-menu">
                     <button class="menu-btn">⋮</button>
@@ -305,10 +304,6 @@ function updateVocabularyTable() {
             </div>
         `;
         vocabList.appendChild(card);
-
-        // Update romaji for this card
-        const japaneseElement = card.querySelector('.japanese-text');
-        updateRomaji(japaneseElement);
     });
 
     // Add event listeners for dropdowns
